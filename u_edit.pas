@@ -2886,6 +2886,7 @@ begin
     working_gta_dir + '\samp\samp.img',
 		working_gta_dir + '\samp\SAMPCOL.img',
 		working_gta_dir + '\samp\custom.img',
+		working_gta_dir + '\models\cutscene.img',
 		);
 
   city.loadwater(working_gta_dir + '\data\water.dat');

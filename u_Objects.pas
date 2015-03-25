@@ -182,8 +182,8 @@ end;
   TGTAMAP = class(TObject)
   public
 
-		imgfile: array[0..4] of string;
-    imglist: array[0..4] of THashedStringList;
+  	imgfile: array[0..5] of string;
+	imglist: array[0..5] of THashedStringList;
 
     Water: array of TWaterGeom;
 
@@ -196,7 +196,7 @@ end;
 
     procedure loadcolldata(collfileidx: integer; inimg: integer);
     procedure loadfile(typ, filen: string; secondarybinipl: boolean);
-    procedure loadimg(filen, filen2, filen3, filen4, filen5: string);
+    procedure loadimg(filen, filen2, filen3, filen4, filen5, filen6: string);
     procedure loadcolors(colorfile: string);
     procedure loadwater(filen: string);
   end;
@@ -691,7 +691,7 @@ begin
 end;
 
 
-procedure TGTAMAP.loadimg(filen, filen2, filen3, filen4, filen5: string);
+procedure TGTAMAP.loadimg(filen, filen2, filen3, filen4, filen5, filen6: string);
 {
 var
   i: integer;}
@@ -726,6 +726,7 @@ var
 
 begin
 
+  globimg(5, filen6);
   globimg(4, filen5);
 	globimg(3, filen4);
 	globimg(2, filen3);
