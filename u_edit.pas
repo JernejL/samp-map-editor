@@ -3129,14 +3129,14 @@ begin
 	Buffer:= glGetString(GL_RENDERER);
 
 	if (Buffer = 'GDI Generic') then begin
-		showmessage('Please install proper drivers for your graphics card. Google will help you in acvhieving this task.' + buffer);
+		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + buffer);
 		halt;
 	end;
 
 	Buffer:= glGetString(GL_Vendor);
 
 	if (Buffer = 'Microsoft Corporation') then begin
-		showmessage('Please install proper drivers for your graphics card. Google will help you in acvhieving this task.' + buffer);
+		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + buffer);
 		halt;
 	end;
 
