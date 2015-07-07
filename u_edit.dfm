@@ -1,6 +1,6 @@
 object GtaEditor: TGtaEditor
-  Left = 298
-  Top = 100
+  Left = 268
+  Top = 161
   AutoScroll = False
   Caption = 'SA-MP: Map Construction'
   ClientHeight = 960
@@ -25,20 +25,10 @@ object GtaEditor: TGtaEditor
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
-    Left = 0
-    Top = 868
-    Width = 1571
-    Height = 3
-    Cursor = crVSplit
-    Align = alBottom
-    ResizeStyle = rsUpdate
-    Visible = False
-  end
   object Splitter2: TSplitter
     Left = 1213
     Top = 27
-    Height = 784
+    Height = 857
     Align = alRight
     ResizeStyle = rsUpdate
   end
@@ -682,6 +672,68 @@ object GtaEditor: TGtaEditor
         4B453735342F23393900393939393939394C4442403139393900}
       OnClick = btn_undoClick
     end
+    object SpeedButton4: TSpeedButton
+      Left = 1289
+      Top = 2
+      Width = 118
+      Height = 23
+      Anchors = [akTop, akRight]
+      Caption = 'JAVASCRIPT'
+      Enabled = False
+      Flat = True
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Glyph.Data = {
+        66050000424D6605000000000000360400002800000010000000100000000100
+        08000100000030010000130B0000130B00000001000000010000001821000821
+        2100082129000829290008293100083139000839420010394A0010425200104A
+        5A0010526300105A6300185A6B00186373001873840018738C00217B8C002184
+        940021849C00218C9C002194A5002194AD002994AD00299CAD00299CB50029A5
+        BD0029ADC60031ADC60029B5CE0031B5D60031BDD60039BDD60031BDDE004AC6
+        DE0052C6DE0063C6DE006BCEDE0073CEDE0031C6E70031CEE700ADDEE700B5DE
+        E700CEE7E70039CEEF00DEE7EF00E7EFEF00EFEFEF0039CEF70039D6F70052D6
+        F7007BE7F700FF00FF0039DEFF0042DEFF004ADEFF0052DEFF005ADEFF0063E7
+        FF008CE7FF0094EFFF009CEFFF00ADEFFF00BDF7FF00CEF7FF00D6F7FF00DEFF
+        FF00E7FFFF00EFFFFF00F7FFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0005330006040C
+        14120A0105330000001033330610191E1D1E2B201E190E043333000000043333
+        181E041D00083035352F261133330000001033331B1D1C1F2221383830302B16
+        33330000001033331D23282A2E253C45423E311933330000001033331D282C29
+        2D25313B3F44321B33330000001033021E211F1D2D25313530403A1D33330000
+        001033051E1D1D1E2C253C4440433C1D01330000001033081E1D1E1D2C253C44
+        40443D1D053300000010330C1D1E1D1F2C253C4130353620073300000010330D
+        1E1D1E1D2C253C2D343030200A330000001033101D1D1E1D2C253C443F3F3E20
+        0C330000001033131D1E1D1E2A243A4242423F260E330000001033161E1D1E1D
+        1E1D343035303526113300000133011B051D011E052B00032614330000000133
+        01190C1B011601330001}
+      ParentFont = False
+      OnClick = SpeedButton4Click
+    end
     object renderpredabbtn: TBitBtn
       Left = 767
       Top = 2
@@ -813,7 +865,7 @@ object GtaEditor: TGtaEditor
     Left = 0
     Top = 27
     Width = 1213
-    Height = 784
+    Height = 857
     Align = alClient
     BevelOuter = bvNone
     Caption = '[ThreeDee OpenGL Reindeer, WORKING...]'
@@ -862,7 +914,7 @@ object GtaEditor: TGtaEditor
     Left = 1361
     Top = 27
     Width = 210
-    Height = 784
+    Height = 857
     ActivePage = TabSheet3
     Align = alRight
     Style = tsFlatButtons
@@ -881,7 +933,7 @@ object GtaEditor: TGtaEditor
       end
       object Bevel4: TBevel
         Left = 0
-        Top = 432
+        Top = 505
         Width = 202
         Height = 3
         Align = alBottom
@@ -1088,7 +1140,7 @@ object GtaEditor: TGtaEditor
       end
       object pnl_cam: TPanel
         Left = 0
-        Top = 435
+        Top = 508
         Width = 202
         Height = 318
         Align = alBottom
@@ -1684,7 +1736,7 @@ object GtaEditor: TGtaEditor
       end
       object Panel6: TPanel
         Left = 0
-        Top = 414
+        Top = 487
         Width = 202
         Height = 18
         Align = alBottom
@@ -1852,7 +1904,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 133
         Width = 202
-        Height = 281
+        Height = 354
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 32
@@ -1878,7 +1930,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 48
         Width = 202
-        Height = 681
+        Height = 754
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 180
@@ -2194,7 +2246,7 @@ object GtaEditor: TGtaEditor
       end
       object Panel11: TPanel
         Left = 0
-        Top = 729
+        Top = 802
         Width = 202
         Height = 24
         Align = alBottom
@@ -2286,7 +2338,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 48
         Width = 202
-        Height = 681
+        Height = 754
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 180
@@ -2300,7 +2352,7 @@ object GtaEditor: TGtaEditor
       TabVisible = False
       DesignSize = (
         202
-        753)
+        826)
       object btn_newton_a: TBitBtn
         Left = 0
         Top = 7
@@ -2479,7 +2531,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 21
         Width = 202
-        Height = 732
+        Height = 805
         HorzScrollBar.Visible = False
         VertScrollBar.Smooth = True
         VertScrollBar.Tracking = True
@@ -2917,8 +2969,8 @@ object GtaEditor: TGtaEditor
           Align = alTop
         end
         object lb_selection: TListBox
-          Left = 9
-          Top = 659
+          Left = 26
+          Top = 696
           Width = 181
           Height = 68
           ItemHeight = 13
@@ -4146,8 +4198,8 @@ object GtaEditor: TGtaEditor
           end
         end
         object undostack: TListBox
-          Left = 1
-          Top = 667
+          Left = 11
+          Top = 743
           Width = 195
           Height = 65
           ItemHeight = 13
@@ -4157,36 +4209,12 @@ object GtaEditor: TGtaEditor
       end
     end
   end
-  object logger: TSynEdit
-    Left = 0
-    Top = 871
-    Width = 1571
-    Height = 70
-    Align = alBottom
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Courier New'
-    Font.Style = []
-    ParentColor = False
-    ParentFont = False
-    TabOrder = 4
-    Visible = False
-    Gutter.Font.Charset = DEFAULT_CHARSET
-    Gutter.Font.Color = clWindowText
-    Gutter.Font.Height = -11
-    Gutter.Font.Name = 'Courier New'
-    Gutter.Font.Style = []
-    Gutter.Visible = False
-    RightEdge = 0
-    ScrollBars = ssVertical
-  end
   object imgipls: TMemo
     Left = 204
     Top = 470
     Width = 177
     Height = 89
-    TabOrder = 5
+    TabOrder = 4
     Visible = False
     WordWrap = False
   end
@@ -4197,7 +4225,7 @@ object GtaEditor: TGtaEditor
     Height = 89
     Lines.Strings = (
       'Memo2')
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object readwriter: TMemo
@@ -4205,7 +4233,7 @@ object GtaEditor: TGtaEditor
     Top = 470
     Width = 177
     Height = 89
-    TabOrder = 7
+    TabOrder = 6
     Visible = False
     WordWrap = False
   end
@@ -4213,9 +4241,9 @@ object GtaEditor: TGtaEditor
     Left = 0
     Top = 27
     Width = 1213
-    Height = 784
+    Height = 857
     Align = alClient
-    TabOrder = 8
+    TabOrder = 7
     object Label23: TLabel
       Left = 62
       Top = 108
@@ -4977,18 +5005,18 @@ object GtaEditor: TGtaEditor
     Left = 1216
     Top = 27
     Width = 145
-    Height = 784
+    Height = 857
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 3
-    TabOrder = 9
+    TabOrder = 8
     Visible = False
     DesignSize = (
       145
-      784)
+      857)
     object Label9: TLabel
       Left = 3
-      Top = 488
+      Top = 561
       Width = 139
       Height = 16
       Anchors = [akLeft, akBottom]
@@ -5006,7 +5034,7 @@ object GtaEditor: TGtaEditor
     end
     object Label18: TLabel
       Left = 3
-      Top = 534
+      Top = 607
       Width = 139
       Height = 15
       Anchors = [akLeft, akBottom]
@@ -5024,7 +5052,7 @@ object GtaEditor: TGtaEditor
     end
     object Label19: TLabel
       Left = 3
-      Top = 662
+      Top = 735
       Width = 134
       Height = 29
       Anchors = [akLeft, akBottom]
@@ -5042,7 +5070,7 @@ object GtaEditor: TGtaEditor
     end
     object Label48: TLabel
       Left = 3
-      Top = 378
+      Top = 451
       Width = 139
       Height = 16
       Anchors = [akLeft, akBottom]
@@ -5077,7 +5105,7 @@ object GtaEditor: TGtaEditor
     end
     object addidetext: TDNK_edit
       Left = 5
-      Top = 556
+      Top = 629
       Width = 68
       Height = 19
       Anchors = [akLeft, akBottom]
@@ -5091,7 +5119,7 @@ object GtaEditor: TGtaEditor
     end
     object addidedesc: TDNK_edit
       Left = 3
-      Top = 507
+      Top = 580
       Width = 139
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5102,7 +5130,7 @@ object GtaEditor: TGtaEditor
     end
     object btndec: TBitBtn
       Left = 76
-      Top = 555
+      Top = 628
       Width = 33
       Height = 22
       Anchors = [akLeft, akBottom]
@@ -5154,7 +5182,7 @@ object GtaEditor: TGtaEditor
     end
     object btninc: TBitBtn
       Left = 109
-      Top = 555
+      Top = 628
       Width = 33
       Height = 22
       Anchors = [akLeft, akBottom]
@@ -5206,7 +5234,7 @@ object GtaEditor: TGtaEditor
     end
     object renderone: TBitBtn
       Left = 3
-      Top = 773
+      Top = 846
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5217,7 +5245,7 @@ object GtaEditor: TGtaEditor
     end
     object btn_renderranges: TBitBtn
       Left = 3
-      Top = 748
+      Top = 821
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5227,7 +5255,7 @@ object GtaEditor: TGtaEditor
     end
     object Edit5: TDNK_edit
       Left = 3
-      Top = 696
+      Top = 769
       Width = 134
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5238,7 +5266,7 @@ object GtaEditor: TGtaEditor
     end
     object Edit6: TDNK_edit
       Left = 3
-      Top = 719
+      Top = 792
       Width = 134
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5249,7 +5277,7 @@ object GtaEditor: TGtaEditor
     end
     object Panel15: TPanel
       Left = 3
-      Top = 583
+      Top = 656
       Width = 137
       Height = 27
       Anchors = [akLeft, akBottom]
@@ -5358,7 +5386,7 @@ object GtaEditor: TGtaEditor
     end
     object cb_fixup_addprefab: TCheckBox
       Left = 3
-      Top = 611
+      Top = 684
       Width = 137
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5367,7 +5395,7 @@ object GtaEditor: TGtaEditor
     end
     object btn_prefabresetzoom: TBitBtn
       Left = 4
-      Top = 631
+      Top = 704
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5422,7 +5450,7 @@ object GtaEditor: TGtaEditor
       Left = 2
       Top = 52
       Width = 139
-      Height = 322
+      Height = 395
       Anchors = [akLeft, akTop, akBottom]
       ItemHeight = 13
       TabOrder = 11
@@ -5430,7 +5458,7 @@ object GtaEditor: TGtaEditor
     end
     object inp_searchide: TDNK_edit
       Left = 3
-      Top = 396
+      Top = 469
       Width = 139
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5442,7 +5470,7 @@ object GtaEditor: TGtaEditor
     end
     object inp_bysizer: TDNK_edit
       Left = 73
-      Top = 447
+      Top = 520
       Width = 41
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5455,7 +5483,7 @@ object GtaEditor: TGtaEditor
     end
     object rb_bigger: TRadioButton
       Left = 17
-      Top = 441
+      Top = 514
       Width = 56
       Height = 12
       Anchors = [akLeft, akBottom]
@@ -5465,7 +5493,7 @@ object GtaEditor: TGtaEditor
     end
     object RadioButton2: TRadioButton
       Left = 17
-      Top = 457
+      Top = 530
       Width = 56
       Height = 12
       Anchors = [akLeft, akBottom]
@@ -5475,7 +5503,7 @@ object GtaEditor: TGtaEditor
     end
     object cb_bysize: TCheckBox
       Left = 3
-      Top = 422
+      Top = 495
       Width = 97
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5593,12 +5621,12 @@ object GtaEditor: TGtaEditor
   end
   object Panel37: TPanel
     Left = 0
-    Top = 811
+    Top = 884
     Width = 1571
     Height = 57
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 10
+    TabOrder = 9
     Visible = False
     object Image14: TImage
       Left = 0
@@ -5797,7 +5825,7 @@ object GtaEditor: TGtaEditor
       '539.0603, 1623.0163, 6.8291'
       '565.3802, 1652.1135, 8.0119'
       '-743.1436, -1104.1944, 55.5203')
-    TabOrder = 11
+    TabOrder = 10
     Visible = False
     WordWrap = False
   end
@@ -5808,7 +5836,7 @@ object GtaEditor: TGtaEditor
     Height = 492
     BevelWidth = 2
     BorderWidth = 2
-    TabOrder = 12
+    TabOrder = 11
     Visible = False
     DesignSize = (
       824
@@ -6149,6 +6177,316 @@ object GtaEditor: TGtaEditor
       end
     end
   end
+  object pnl_besen: TDNK_designpanel
+    Left = 290
+    Top = 140
+    Width = 824
+    Height = 608
+    BevelWidth = 2
+    BorderWidth = 2
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 12
+    Visible = False
+    Bordersize = 2
+    object Splitter1: TSplitter
+      Left = 4
+      Top = 531
+      Width = 816
+      Height = 3
+      Cursor = crVSplit
+      Align = alBottom
+      ResizeStyle = rsUpdate
+    end
+    object Panel41: TPanel
+      Left = 4
+      Top = 4
+      Width = 816
+      Height = 21
+      Align = alTop
+      BevelInner = bvRaised
+      BevelOuter = bvLowered
+      TabOrder = 0
+      OnMouseDown = Image15MouseDown
+      DesignSize = (
+        816
+        21)
+      object Image17: TImage
+        Left = 2
+        Top = 2
+        Width = 812
+        Height = 17
+        Align = alClient
+        Picture.Data = {
+          07544269746D617092040000424D920400000000000036040000280000000100
+          00001700000001000800000000005C0000000000000000000000000100000001
+          0000A0A0A000A2A2A200A4A4A400A7A7A700A9A9A900ABABAB00AEAEAE00B0B0
+          B000B2B2B200B5B5B500B7B7B700B9B9B900BBBBBB00BDBDBD00BFBFBF00C2C2
+          C200C4C4C400C6C6C600C8C8C800CACACA00CCCCCC00CFCFCF00D1D1D1000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000100000002000000030000000400000005000000060000000700
+          000008000000090000000A0000000B0000000C0000000D0000000E0000000F00
+          000010000000110000001200000013000000140000001500000016000000}
+        Stretch = True
+        OnMouseDown = Image15MouseDown
+      end
+      object Label76: TLabel
+        Left = 6
+        Top = 4
+        Width = 236
+        Height = 13
+        Caption = 'Map editor console / Javascript evaluator'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = True
+        OnMouseDown = Image15MouseDown
+      end
+      object SpeedButton3: TSpeedButton
+        Left = 737
+        Top = 2
+        Width = 77
+        Height = 17
+        Anchors = [akTop, akRight]
+        Caption = 'Close'
+        Flat = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clMaroon
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        Glyph.Data = {
+          06050000424D060500000000000036040000280000000E0000000D0000000100
+          080000000000D0000000230B0000230B0000000100000001000000003D000000
+          43000000440000004C0000004D00000053000000540000005B0000005E000000
+          7C0000007D0000007E000000880000008B0000008C0000009100000092000000
+          930000009600000098000000A0000000A2000000A4000000AC000000AF000000
+          B2000000B4000000B7000000BB000000BC000000BF000000C0000000C1000000
+          C3000000C5000000C6000000C8000000CA000000CD000000D0000000D2000000
+          D3000000D4000000D6000000D7000000D9000000DA000000DB000000DC000000
+          DF000101DF000101E0000000E1000000E2000303E3000000E5000303E6000404
+          E6000404E9000000F1000101F3000404F7000000F9000101F9000303F8000303
+          F9000404F8000000FF000101FF002222FF00FF00FF0000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000464646460746
+          46464646054646460000464646140D01464646100B0046460000464617221F0C
+          03461219180900460000463B3C36281E11151B211F180A060000464643453928
+          27242523211A0F46000046464644452B292726251B1346460000464646463D32
+          2B2927241646464600004646461F2E302D2B2A2812044646000046461D2B3431
+          30332C2A200D024600004643444037352F42453A2A210E08000046464345412C
+          2046444538241546000046464643441C464646433F1846460000464646464346
+          464646463E4646460000}
+        ParentFont = False
+        OnClick = SpeedButton3Click
+      end
+      object SpeedButton5: TSpeedButton
+        Left = 606
+        Top = 2
+        Width = 131
+        Height = 17
+        Anchors = [akTop, akRight]
+        Caption = 'Run (CTRL+enter)'
+        Flat = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clMaroon
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        Glyph.Data = {
+          8A050000424D8A05000000000000360400002800000011000000110000000100
+          08000000000054010000200B0000200B00000001000000010000000000001F1F
+          1F00FF00FF0080808000D7D7D700D8D8D800D9D9D900DADADA00DBDBDB00DCDC
+          DC00DDDDDD00DEDEDE00DFDFDF00E0E0E000E1E1E100E2E2E200E3E3E300E4E4
+          E400E5E5E500E6E6E600E7E7E700E8E8E800E9E9E900EAEAEA00EBEBEB00ECEC
+          EC00EDEDED00EEEEEE00EFEFEF00F0F0F000F1F1F100F2F2F200F3F3F300F4F4
+          F400F5F5F500F6F6F600FFFFFF00000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000020202020000
+          0000000000000000000002F664DB0202020200030303030303030303030002CF
+          F33B0202020200241E1F1F202122232303000218C2EF0202020200241C1D1D1E
+          1F1F2021030002EC00B80202020200241A1B1C1C1D1D1E1F030002B0E3000202
+          020200241818191A1B1C1C1C03000200A7DA0202020200241617171818191A1B
+          03000279E1F70200000000241415151616171818030002F451D4020003030324
+          1212131415151616030002CAF12B0200240E0F0F011111121213141503000208
+          BDEE0200240C0C01010F0F1010111212030002E800B40200240A010101010101
+          01010110030002ACDF00020024080901010A0B0C0C0D010F030002E8F98B0200
+          240606070109090A0A0B010C03000269DCF6020024040505060607080909010A
+          030002F340CF0200242424242424242424242424240002C4F018020000000000
+          000000000000000000000200B9EC}
+        ParentFont = False
+        OnClick = SpeedButton5Click
+      end
+    end
+    object logger: TSynEdit
+      Left = 4
+      Top = 534
+      Width = 816
+      Height = 70
+      Align = alBottom
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Courier New'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 1
+      Gutter.Font.Charset = DEFAULT_CHARSET
+      Gutter.Font.Color = clWindowText
+      Gutter.Font.Height = -11
+      Gutter.Font.Name = 'Courier New'
+      Gutter.Font.Style = []
+      Gutter.Visible = False
+      RightEdge = 0
+      ScrollBars = ssVertical
+    end
+    object jseditor: TSynEdit
+      Left = 4
+      Top = 25
+      Width = 816
+      Height = 506
+      Align = alClient
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Courier New'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 2
+      OnKeyDown = jseditorKeyDown
+      Gutter.Font.Charset = DEFAULT_CHARSET
+      Gutter.Font.Color = clWindowText
+      Gutter.Font.Height = -11
+      Gutter.Font.Name = 'Courier New'
+      Gutter.Font.Style = []
+      Gutter.ShowLineNumbers = True
+      Highlighter = SynJScriptSyn1
+      Lines.Strings = (
+        '// yes, this is all legal javascript.'
+        ''
+        'var control = new EditorControl();'
+        ''
+        'print(control.GetCameraViewport());'
+        ''
+        'control.SetCameraViewport('
+        ''
+        '-1178.83, -1947.00, 291.81, // position'
+        '-1179.37, -1947.84, 290.99, // target'
+        '45.0, // fov'
+        '0.2, // near clip'
+        '10000.0, // far clip'
+        '0,1,0 // upvector'
+        ');'
+        ''
+        'while (true) {'
+        ''
+        '    var streamout = control.StreamerRemaining();'
+        ''
+        '    if (streamout < 1.0) {'
+        '    print('#39'check out'#39');'
+        '      break;'
+        '      }'
+        ''
+        '    print('#39'load loop: '#39' + streamout);'
+        
+          '    control.StreamerProcess(); // run streamer until it streams ' +
+          'in all we need.'
+        '    print('#39'check over.'#39');'
+        '}'
+        ''
+        '// width, height, folder, name (for jpeg)'
+        'control.ProduceSnapShot(1024,1024, '#39'map'#39', '#39'testpic'#39');'
+        ''
+        
+          'print('#39'streamer has: '#39' + control.StreamerRemaining()); // show h' +
+          'ow many objects streamer has to load'
+        ''
+        '//var mybutton = new Tool();'
+        '//mybutton.onclick = function() { alert('#39'test'#39'); };')
+    end
+  end
   object ThreadedTimer1: TThreadedTimer
     OnTimer = ThreadedTimer1Timer
     Left = 274
@@ -6195,5 +6533,14 @@ object GtaEditor: TGtaEditor
     OnTimer = ThreadedTimer3Timer
     Left = 330
     Top = 613
+  end
+  object SynJScriptSyn1: TSynJScriptSyn
+    DefaultFilter = 'Javascript Files (*.js)|*.js'
+    CommentAttri.Foreground = clGreen
+    KeyAttri.Foreground = clBlue
+    StringAttri.Foreground = 16726783
+    StringAttri.Style = [fsBold]
+    Left = 817
+    Top = 96
   end
 end

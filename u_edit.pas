@@ -1,5 +1,5 @@
 {
-
+
 <Zamaroht> your editor shouldn't let letters to be pressed in the coordinates or rotation boxes :p
 <Zamaroht> if you touch something there, and then move the camera around with wasd, the keys get written there
 <Zamaroht> or maybe remove focus from the box when right click is pressed in the 3d view
@@ -40,44 +40,64 @@ interface
 
 uses
 	Windows, Messages, SysUtils, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, CheckLst, ExtCtrls, ThdTimer,
-  ComCtrls, Buttons, clipbrd, tlhelp32, Math, jpeg,
-  gtadll,
-  textparser,
-  u_Objects,
-  FrustumCulling,
-  Geometry,
-  VectorTypes,
-  RenderWareDFF,
-  CameraClass,
-  rwtxd,
-  u_txdrecords,
-  OpenGL12, SynEdit, Menus, ImgList,
-  colobject, newton, FileCtrl
-  , vectorgeometry, DNK_edit, uHashedStringList, Trackbar_32, inifiles,
-  checkbox_32, DNK_RoundSlider, bitunit, Grids, registry, DNK_Panel,
-  SynMemo;
+	Controls, Forms, Dialogs, StdCtrls, CheckLst, ExtCtrls, ThdTimer,
+	ComCtrls, Buttons, clipbrd, tlhelp32, Math, jpeg,
+	gtadll,
+	textparser,
+	u_Objects,
+	FrustumCulling,
+	Geometry,
+	VectorTypes,
+	RenderWareDFF,
+	CameraClass,
+	rwtxd,
+	u_txdrecords,
+	OpenGL12, SynEdit, Menus, ImgList,
+	colobject, newton, FileCtrl
+	, vectorgeometry, DNK_edit, uHashedStringList, Trackbar_32, inifiles,
+	checkbox_32, DNK_RoundSlider, bitunit, Grids, registry, DNK_Panel,
+	SynMemo,
+	BESEN, BESENValue, BESENObject, BESENErrors, BESENNativeObject, BESENObjectJSON,
+	BESENConstants, BESENObjectGlobal, BESENNumberUtils,
+
+	BESENStringUtils,
+  BESENStringTree,
+  BESENStringList,
+  BESENSelfBalancedTree,
+  BESENScope,
+  BESENRegExpCache,
+  BESENRandomGenerator,
+  BESENPointerSelfBalancedTree,
+  BESENPointerList,
+  BESENParser,
+  BESENOpcodes,
+  BESENObjectThrowTypeErrorFunction,
+  BESENObjectStringPrototype,
+  BESENObjectStringConstructor,
+  BESENObjectString, BESENCharset,
+
+	 SynEditHighlighter,
+  SynHighlighterJScript, DNK_designpanel;
 
 {$L EliRT.obj}
 
 function RT_GetVersion(pReserved: Pointer): longword; stdcall; external;
-function xVirtualAllocEx(hProcess: longword; lpAddress: Pointer; dwSize: longword; flAllocationType: longword; flProtect: longword): Pointer;
-  stdcall; external;
+function xVirtualAllocEx(hProcess: longword; lpAddress: Pointer; dwSize: longword; flAllocationType: longword; flProtect: longword): Pointer; stdcall; external;
 function xCreateRemoteThread(hProcess: longword; lpThreadAttributes: Pointer; dwStackSize: longword; lpStartAddress: Pointer; lpParameter: Pointer; dwCreationFlags: longword; var lpThreadId: cardinal): longword; stdcall; external;
 
 const
 
-  ScreenINFOF_PRIMARY = $1;
+	ScreenINFOF_PRIMARY = $1;
 
-  hl_normal    = 0;
-  hl_selected  = 1;
+	hl_normal    = 0;
+	hl_selected  = 1;
 	hl_novertexl = 2;
 
 	editor_regkey = 'SOFTWARE\JernejL\SAMP-MAPED\';
 
 type
 
-tagScreenINFOEXA = record
+	tagScreenINFOEXA = record
 		cbSize:   DWORD;
 		rcScreen: TRect;
 		rcWork:   TRect;
@@ -89,480 +109,497 @@ tagScreenINFOEXA = record
 
 	HScreen = type integer;
 
-	TScreenEnumProc = function(hm: HScreen; dc: HDC; r: PRect; l: LPARAM): boolean;
-		stdcall;
+	TScreenEnumProc = function(hm: HScreen; dc: HDC; r: PRect; l: LPARAM): boolean; stdcall;
 
 	// engine records
 
 	TScreen = packed record
 		Rect: Trect;
 		Name: array[0..127] of AnsiChar;
+		device: array[0..127] of AnsiChar;
+		dDevice: array[0..CCHDEVICENAME] of AnsiChar;
 		def:  boolean;
 		depth: integer;
 	end;
 
-  t3drect = array[0..1] of TVector3f;
+	t3drect = array[0..1] of TVector3f;
 
-  THit = packed record
-    NCount: gluint;
-    DNear,
-    DFar:   gluint;
+	THit = packed record
+		NCount: gluint;
+		DNear,
+		DFar:   gluint;
 		Name:   gluint; //array[0..31] of GLuint; - one geom shouldn't be drawn twice, if this gets changed fix this.
-  end;
+	end;
 	PHit = ^THit;
 
-  TGtaEditor = class(TForm)
-    Panel5:    TPanel;
-    Image4:    TImage;
-    Panel_imageoptionpanel: TPanel;
-    Image3:    TImage;
-		Image5:    TImage;
-    Splitter1: TSplitter;
-    ProgressBar1: TProgressBar;
-		statuslabel: TLabel;
-    ThreadedTimer1: TThreadedTimer;
-    GlPanel:   TPanel;
-    PageControl1: TPageControl;
-    TabSheet2: TTabSheet;
-    ThreadedTimer2: TThreadedTimer;
-    TabSheet3: TTabSheet;
-    Panel2:    TPanel;
-    Image2:    TImage;
-    btn_addtoprefabs: TSpeedButton;
-    btn_deleteprefab: TSpeedButton;
-    label_exstatus: TLabel;
-    Panel1:    TPanel;
-    Image1:    TImage;
-    btn_addcameraview: TSpeedButton;
-    btn_delcameraview: TSpeedButton;
-    imgipls:   TMemo;
-    Memo2:     TMemo;
-    readwriter: TMemo;
-    pnl_cam:   TPanel;
-    Label1:    TLabel;
-    Label3:    TLabel;
-    Label2:    TLabel;
-    view_interiors: TCheckBox;
-    box_tex:   TCheckBox;
-    pnl_favcap: TPanel;
-    Imageo:    TImage;
-		Label11:   TLabel;
-    Panel3:    TPanel;
-		Image6:    TImage;
-		Label12:   TLabel;
-		btn_inp:   TSpeedButton;
-    OpenDialog1: TOpenDialog;
-    btn_clear: TSpeedButton;
-    btn_about: TSpeedButton;
-    Panel6:    TPanel;
-    Image8:    TImage;
-    Label14:   TLabel;
-    PopupMenu2: TPopupMenu;
-    Copy1:     TMenuItem;
-    btn_renobj: TSpeedButton;
-    cb_cullzones: TCheckBox;
-    cb_mode_nolighting: TCheckBox;
-    btn_ipl:   TSpeedButton;
-    SaveDialog2: TSaveDialog;
-    Memo3:     TMemo;
-    ProgressBar2: TProgressBar;
-    btn_impipl: TSpeedButton;
-    OpenDialog2: TOpenDialog;
-    Panel8:    TPanel;
-    btn_camerahere: TBitBtn;
-    Edit4:     TDNK_edit;
-    btn_showcode: TSpeedButton;
-    pnlhelp:   TPanel;
-    btn_sos:   TSpeedButton;
-    ThreadedTimer3: TThreadedTimer;
-    cb_nvc:    TCheckBox;
-		lodaggresivity: TTrackbar_32;
-    drawdistance: TTrackbar_32;
-    streamlimit: TTrackbar_32;
-		Bevel1:    TBevel;
-    Bevel2:    TBevel;
-    Panel9:    TPanel;
-    Image10:   TImage;
-    Label17:   TLabel;
-    labelinstructions2: TLabel;
-    cloneobj:  TSpeedButton;
-    delobj:    TSpeedButton;
-    ASDASDS1:  TMenuItem;
-    renderpredabbtn: TBitBtn;
-		btn_copyview: TBitBtn;
-    btn_addnewobj: TSpeedButton;
-		Bevel5:    TBevel;
-    cameraviews: TListBox;
-    SpeedButton1: TSpeedButton;
-    NewPrefabs: TListBox;
-    Panel11:   TPanel;
-    ObjFilter: TDNK_edit;
-    PFListFiltered: TListBox;
-    lblfilterindiactor: TLabel;
-    btnclearfilter: TSpeedButton;
-    Splitter2: TSplitter;
-    pnl_addide: TPanel;
-    Label9:    TLabel;
-    Label18:   TLabel;
-    addidetext: TDNK_edit;
-    addidedesc: TDNK_edit;
-		btndec:    TBitBtn;
-    btninc:    TBitBtn;
-    Label19:   TLabel;
-		renderone: TBitBtn;
-    btn_renderranges: TBitBtn;
-    Edit5: TDNK_edit;
-    Edit6: TDNK_edit;
-    Panel12:   TPanel;
-    Panel13:   TPanel;
-    Label20:   TLabel;
-    Label21:   TLabel;
-    waterr:    TTrackbar_32;
-    waterg:    TTrackbar_32;
-    watera:    TTrackbar_32;
-    waterb:    TTrackbar_32;
-    Panel14:   TPanel;
-    Trackbar_321: TTrackbar_32;
-    btn_animatewater: Tcheckbox_32;
-    Label22:   TLabel;
-    logger:    TSynEdit;
-    Panel15:   TPanel;
-    Image11:   TImage;
-    btn_addprefabok: TSpeedButton;
-		cb_fixup_addprefab: TCheckBox;
-    Panel16:   TPanel;
-		Label23:   TLabel;
-    Panel17:   TPanel;
-    Label24:   TLabel;
-    Label25:   TLabel;
-		Panel18:   TPanel;
-    Panel19:   TPanel;
-    Label26:   TLabel;
-		Label27:   TLabel;
-    Panel20:   TPanel;
-    Label28:   TLabel;
-    Label29:   TLabel;
-    Panel21:   TPanel;
-    Label30:   TLabel;
-    Panel22:   TPanel;
-    Label31:   TLabel;
-    Panel23:   TPanel;
-    Label16:   TLabel;
-    Label32:   TLabel;
-    Panel24:   TPanel;
-    Label33:   TLabel;
-    Label34:   TLabel;
-    Panel25:   TPanel;
-    Label35:   TLabel;
-    Label36:   TLabel;
-    Panel26:   TPanel;
-    Label15:   TLabel;
-    Label37:   TLabel;
-    Label38:   TLabel;
-    Panel27:   TPanel;
-    Panel28:   TPanel;
-    Label39:   TLabel;
-    Label40:   TLabel;
-    Label41:   TLabel;
-    Panel29:   TPanel;
-		Label42:   TLabel;
-    Label43:   TLabel;
-    Label44:   TLabel;
-		Label45:   TLabel;
-    btn_load:  TSpeedButton;
-		cb_ambient: TCheckBox;
-    Trackbar_322: TTrackbar_32;
-		cb_realrendering: TCheckBox;
-    btn_testmap: TSpeedButton;
-    Bevel6:    TBevel;
-    Label46:   TLabel;
-    Panel30:   TPanel;
-    btn_prefabresetzoom: TBitBtn;
-    list_ideall: TListBox;
-    Label48:   TLabel;
-    inp_searchide: TDNK_edit;
-    Label49:   TLabel;
-    inp_bysizer: TDNK_edit;
-    rb_bigger: TRadioButton;
-    RadioButton2: TRadioButton;
-    cb_bysize: TCheckBox;
-    SpeedButton2: TSpeedButton;
-    tab_newton: TTabSheet;
-    btn_newton_a: TBitBtn;
-    btn_buildworld: TBitBtn;
-    CheckBox1: TCheckBox;
-    Edit1: TDNK_edit;
-    Edit2: TDNK_edit;
-    Edit3: TDNK_edit;
-    Memo1:     TMemo;
-		oyea:      TMemo;
-    TabSheet1: TTabSheet;
-		cb_showlod: TCheckBox;
-    brn_importpaste: TSpeedButton;
-    Bevel3:    TBevel;
-    Panel31:   TPanel;
-    Image9:    TImage;
-    Label47:   TLabel;
-    cb_wire: TCheckBox;
-		cb_showcoll: TCheckBox;
-    dassaddsa: TBitBtn;
-    fuckbutton: TBitBtn;
-    btn_wantcols: TCheckBox;
-		btn_loadwithcols: TSpeedButton;
-    btn_cyclecolumns: TSpeedButton;
-    btn_undo: TSpeedButton;
-    Bevel4: TBevel;
-    Panel37: TPanel;
-    Image14: TImage;
-    Memo4: TMemo;
-    btn_report: TSpeedButton;
-    wnd_advinfo: TPanel;
-    Label60: TLabel;
-    Label61: TLabel;
-    Label62: TLabel;
-    Label63: TLabel;
-    Label64: TLabel;
-    Label65: TLabel;
-    Label66: TLabel;
-    iadv_iden: TEdit;
-    list_dfftextures: TSynMemo;
-    mdl_name: TEdit;
-    txdtextures: TSynMemo;
-    inp_txdname: TEdit;
-    ainp_interior: TEdit;
-    ideflags: TCheckListBox;
-    extras: TSynMemo;
-    Panel38: TPanel;
-    Image15: TImage;
-    lbl_advinfocaption: TLabel;
-    btn_closematerial: TSpeedButton;
-    CheckBox2: TCheckBox;
-    Panel39: TPanel;
-    Image16: TImage;
-    btn_gtfoaddide: TSpeedButton;
-    ScrollBox1: TScrollBox;
-    Label50: TLabel;
-    lb_mmode: TListBox;
-    Panel7: TPanel;
+	TGtaEditor = class(TForm)
+	Panel5:    TPanel;
+	Image4:    TImage;
+	Panel_imageoptionpanel: TPanel;
+	Image3:    TImage;
+	Image5:    TImage;
+	ProgressBar1: TProgressBar;
+	statuslabel: TLabel;
+	ThreadedTimer1: TThreadedTimer;
+	GlPanel:   TPanel;
+	PageControl1: TPageControl;
+	TabSheet2: TTabSheet;
+	ThreadedTimer2: TThreadedTimer;
+	TabSheet3: TTabSheet;
+	Panel2:    TPanel;
+	Image2:    TImage;
+	btn_addtoprefabs: TSpeedButton;
+	btn_deleteprefab: TSpeedButton;
+	label_exstatus: TLabel;
+	Panel1:    TPanel;
+	Image1:    TImage;
+	btn_addcameraview: TSpeedButton;
+	btn_delcameraview: TSpeedButton;
+	imgipls:   TMemo;
+	Memo2:     TMemo;
+	readwriter: TMemo;
+	pnl_cam:   TPanel;
+	Label1:    TLabel;
+	Label3:    TLabel;
+	Label2:    TLabel;
+	view_interiors: TCheckBox;
+	box_tex:   TCheckBox;
+	pnl_favcap: TPanel;
+	Imageo:    TImage;
+	Label11:   TLabel;
+	Panel3:    TPanel;
+	Image6:    TImage;
+	Label12:   TLabel;
+	btn_inp:   TSpeedButton;
+	OpenDialog1: TOpenDialog;
+	btn_clear: TSpeedButton;
+	btn_about: TSpeedButton;
+	Panel6:    TPanel;
+	Image8:    TImage;
+	Label14:   TLabel;
+	PopupMenu2: TPopupMenu;
+	Copy1:     TMenuItem;
+	btn_renobj: TSpeedButton;
+	cb_cullzones: TCheckBox;
+	cb_mode_nolighting: TCheckBox;
+	btn_ipl:   TSpeedButton;
+	SaveDialog2: TSaveDialog;
+	Memo3:     TMemo;
+	ProgressBar2: TProgressBar;
+	btn_impipl: TSpeedButton;
+	OpenDialog2: TOpenDialog;
+	Panel8:    TPanel;
+	btn_camerahere: TBitBtn;
+	Edit4:     TDNK_edit;
+	btn_showcode: TSpeedButton;
+	pnlhelp:   TPanel;
+	btn_sos:   TSpeedButton;
+	ThreadedTimer3: TThreadedTimer;
+	cb_nvc:    TCheckBox;
+	lodaggresivity: TTrackbar_32;
+	drawdistance: TTrackbar_32;
+	streamlimit: TTrackbar_32;
+	Bevel1:    TBevel;
+	Bevel2:    TBevel;
+	Panel9:    TPanel;
+	Image10:   TImage;
+	Label17:   TLabel;
+	labelinstructions2: TLabel;
+	cloneobj:  TSpeedButton;
+	delobj:    TSpeedButton;
+	ASDASDS1:  TMenuItem;
+	renderpredabbtn: TBitBtn;
+	btn_copyview: TBitBtn;
+	btn_addnewobj: TSpeedButton;
+	Bevel5:    TBevel;
+	cameraviews: TListBox;
+	SpeedButton1: TSpeedButton;
+	NewPrefabs: TListBox;
+	Panel11:   TPanel;
+	ObjFilter: TDNK_edit;
+	PFListFiltered: TListBox;
+	lblfilterindiactor: TLabel;
+	btnclearfilter: TSpeedButton;
+	Splitter2: TSplitter;
+	pnl_addide: TPanel;
+	Label9:    TLabel;
+	Label18:   TLabel;
+	addidetext: TDNK_edit;
+	addidedesc: TDNK_edit;
+	btndec:    TBitBtn;
+	btninc:    TBitBtn;
+	Label19:   TLabel;
+	renderone: TBitBtn;
+	btn_renderranges: TBitBtn;
+	Edit5: TDNK_edit;
+	Edit6: TDNK_edit;
+	Panel12:   TPanel;
+	Panel13:   TPanel;
+	Label20:   TLabel;
+	Label21:   TLabel;
+	waterr:    TTrackbar_32;
+	waterg:    TTrackbar_32;
+	watera:    TTrackbar_32;
+	waterb:    TTrackbar_32;
+	Panel14:   TPanel;
+	Trackbar_321: TTrackbar_32;
+	btn_animatewater: Tcheckbox_32;
+	Label22:   TLabel;
+	Panel15:   TPanel;
+	Image11:   TImage;
+	btn_addprefabok: TSpeedButton;
+	cb_fixup_addprefab: TCheckBox;
+	Panel16:   TPanel;
+	Label23:   TLabel;
+	Panel17:   TPanel;
+	Label24:   TLabel;
+	Label25:   TLabel;
+	Panel18:   TPanel;
+	Panel19:   TPanel;
+	Label26:   TLabel;
+	Label27:   TLabel;
+	Panel20:   TPanel;
+	Label28:   TLabel;
+	Label29:   TLabel;
+	Panel21:   TPanel;
+	Label30:   TLabel;
+	Panel22:   TPanel;
+	Label31:   TLabel;
+	Panel23:   TPanel;
+	Label16:   TLabel;
+	Label32:   TLabel;
+	Panel24:   TPanel;
+	Label33:   TLabel;
+	Label34:   TLabel;
+	Panel25:   TPanel;
+	Label35:   TLabel;
+	Label36:   TLabel;
+	Panel26:   TPanel;
+	Label15:   TLabel;
+	Label37:   TLabel;
+	Label38:   TLabel;
+	Panel27:   TPanel;
+	Panel28:   TPanel;
+	Label39:   TLabel;
+	Label40:   TLabel;
+	Label41:   TLabel;
+	Panel29:   TPanel;
+	Label42:   TLabel;
+	Label43:   TLabel;
+	Label44:   TLabel;
+	Label45:   TLabel;
+	btn_load:  TSpeedButton;
+	cb_ambient: TCheckBox;
+	Trackbar_322: TTrackbar_32;
+	cb_realrendering: TCheckBox;
+	btn_testmap: TSpeedButton;
+	Bevel6:    TBevel;
+	Label46:   TLabel;
+	Panel30:   TPanel;
+	btn_prefabresetzoom: TBitBtn;
+	list_ideall: TListBox;
+	Label48:   TLabel;
+	inp_searchide: TDNK_edit;
+	Label49:   TLabel;
+	inp_bysizer: TDNK_edit;
+	rb_bigger: TRadioButton;
+	RadioButton2: TRadioButton;
+	cb_bysize: TCheckBox;
+	SpeedButton2: TSpeedButton;
+	tab_newton: TTabSheet;
+	btn_newton_a: TBitBtn;
+	btn_buildworld: TBitBtn;
+	CheckBox1: TCheckBox;
+	Edit1: TDNK_edit;
+	Edit2: TDNK_edit;
+	Edit3: TDNK_edit;
+	Memo1:     TMemo;
+	oyea:      TMemo;
+	TabSheet1: TTabSheet;
+	cb_showlod: TCheckBox;
+	brn_importpaste: TSpeedButton;
+	Bevel3:    TBevel;
+	Panel31:   TPanel;
+	Image9:    TImage;
+	Label47:   TLabel;
+	cb_wire: TCheckBox;
+	cb_showcoll: TCheckBox;
+	dassaddsa: TBitBtn;
+	fuckbutton: TBitBtn;
+	btn_wantcols: TCheckBox;
+	btn_loadwithcols: TSpeedButton;
+	btn_cyclecolumns: TSpeedButton;
+	btn_undo: TSpeedButton;
+	Bevel4: TBevel;
+	Panel37: TPanel;
+	Image14: TImage;
+	Memo4: TMemo;
+	btn_report: TSpeedButton;
+	wnd_advinfo: TPanel;
+	Label60: TLabel;
+	Label61: TLabel;
+	Label62: TLabel;
+	Label63: TLabel;
+	Label64: TLabel;
+	Label65: TLabel;
+	Label66: TLabel;
+	iadv_iden: TEdit;
+	list_dfftextures: TSynMemo;
+	mdl_name: TEdit;
+	txdtextures: TSynMemo;
+	inp_txdname: TEdit;
+	ainp_interior: TEdit;
+	ideflags: TCheckListBox;
+	extras: TSynMemo;
+	Panel38: TPanel;
+	Image15: TImage;
+	lbl_advinfocaption: TLabel;
+	btn_closematerial: TSpeedButton;
+	CheckBox2: TCheckBox;
+	Panel39: TPanel;
+	Image16: TImage;
+	btn_gtfoaddide: TSpeedButton;
+	ScrollBox1: TScrollBox;
+	Label50: TLabel;
+	lb_mmode: TListBox;
+	Panel7: TPanel;
 	Label5: TLabel;
-    Label4: TLabel;
-    Label6: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
-    TrackBar1: TTrackBar;
-    TrackBar2: TTrackBar;
-    TrackBar3: TTrackBar;
-    inp_coordsedit: TDNK_edit;
-    Panel10: TPanel;
-    Label10: TLabel;
-    inp_ide: TDNK_edit;
-    btn_previouside: TBitBtn;
-    btn_nextide: TBitBtn;
-    inp_rotations: TDNK_edit;
-    BitBtn1: TBitBtn;
-    btn_rstangles: TBitBtn;
-    Panel4: TPanel;
-    Image7: TImage;
-    Label13: TLabel;
-    cb_autopick: Tcheckbox_32;
-    lb_selection: TListBox;
-    Panel32: TPanel;
-    Image12: TImage;
-    Label51: TLabel;
-    Panel33: TPanel;
-    Label52: TLabel;
-    Label53: TLabel;
-    Label54: TLabel;
-    Label55: TLabel;
-    Label56: TLabel;
-    Label58: TLabel;
-    Label59: TLabel;
-    nudge_power: TTrackBar;
-    inp_ax: TDNK_edit;
-    inp_ay: TDNK_edit;
-    inp_az: TDNK_edit;
-    inp_rz: TDNK_edit;
-    BitBtn2: TBitBtn;
-    btn_thingsgodown: TBitBtn;
-    BitBtn4: TBitBtn;
-    BitBtn5: TBitBtn;
-    BitBtn6: TBitBtn;
-    BitBtn7: TBitBtn;
-    btn_rotatel: TBitBtn;
-    btn_arrr: TBitBtn;
-    inp_rx: TDNK_edit;
-    btn_rxd: TBitBtn;
-    btn_rxu: TBitBtn;
-    inp_ry: TDNK_edit;
-    btn_ryd: TBitBtn;
-    btn_ryu: TBitBtn;
-    Panel34: TPanel;
-    inp_transformer: TDNK_edit;
-    btn_transformall: TBitBtn;
-    Panel35: TPanel;
-    Image13: TImage;
-    Label57: TLabel;
-    Panel36: TPanel;
-    nudgeup: TBitBtn;
-    nudgedown: TBitBtn;
-    nudgeleft: TBitBtn;
-    nudgeright: TBitBtn;
-    undostack: TListBox;
-    convert_some_colls: TBitBtn;
-    btn_exportmap: TBitBtn;
-    fobj_frawdistance: TDNK_edit;
-    Label67: TLabel;
-    nudgepowerrot: TTrackBar;
-    Label68: TLabel;
+	Label4: TLabel;
+	Label6: TLabel;
+	Label7: TLabel;
+	Label8: TLabel;
+	TrackBar1: TTrackBar;
+	TrackBar2: TTrackBar;
+	TrackBar3: TTrackBar;
+	inp_coordsedit: TDNK_edit;
+	Panel10: TPanel;
+	Label10: TLabel;
+	inp_ide: TDNK_edit;
+	btn_previouside: TBitBtn;
+	btn_nextide: TBitBtn;
+	inp_rotations: TDNK_edit;
+	BitBtn1: TBitBtn;
+	btn_rstangles: TBitBtn;
+	Panel4: TPanel;
+	Image7: TImage;
+	Label13: TLabel;
+	cb_autopick: Tcheckbox_32;
+	lb_selection: TListBox;
+	Panel32: TPanel;
+	Image12: TImage;
+	Label51: TLabel;
+	Panel33: TPanel;
+	Label52: TLabel;
+	Label53: TLabel;
+	Label54: TLabel;
+	Label55: TLabel;
+	Label56: TLabel;
+	Label58: TLabel;
+	Label59: TLabel;
+	nudge_power: TTrackBar;
+	inp_ax: TDNK_edit;
+	inp_ay: TDNK_edit;
+	inp_az: TDNK_edit;
+	inp_rz: TDNK_edit;
+	BitBtn2: TBitBtn;
+	btn_thingsgodown: TBitBtn;
+	BitBtn4: TBitBtn;
+	BitBtn5: TBitBtn;
+	BitBtn6: TBitBtn;
+	BitBtn7: TBitBtn;
+	btn_rotatel: TBitBtn;
+	btn_arrr: TBitBtn;
+	inp_rx: TDNK_edit;
+	btn_rxd: TBitBtn;
+	btn_rxu: TBitBtn;
+	inp_ry: TDNK_edit;
+	btn_ryd: TBitBtn;
+	btn_ryu: TBitBtn;
+	Panel34: TPanel;
+	inp_transformer: TDNK_edit;
+	btn_transformall: TBitBtn;
+	Panel35: TPanel;
+	Image13: TImage;
+	Label57: TLabel;
+	Panel36: TPanel;
+	nudgeup: TBitBtn;
+	nudgedown: TBitBtn;
+	nudgeleft: TBitBtn;
+	nudgeright: TBitBtn;
+	undostack: TListBox;
+	convert_some_colls: TBitBtn;
+	btn_exportmap: TBitBtn;
+	fobj_frawdistance: TDNK_edit;
+	Label67: TLabel;
+	nudgepowerrot: TTrackBar;
+	Label68: TLabel;
+    pnl_besen: TDNK_designpanel;
+    Panel41: TPanel;
+    Image17: TImage;
+    Label76: TLabel;
+    SpeedButton3: TSpeedButton;
+    Splitter1: TSplitter;
+    logger: TSynEdit;
+    jseditor: TSynEdit;
+    SynJScriptSyn1: TSynJScriptSyn;
+    SpeedButton4: TSpeedButton;
+    SpeedButton5: TSpeedButton;
 
-		function calculatecenterofmapping: t3drect;
+	function calculatecenterofmapping: t3drect;
 
-		procedure switch2img(imgidx: integer);
+	procedure switch2img(imgidx: integer);
 
-    function ScreenVectorIntersectWithPlaneXY(const aScreenPoint: TVector; const z: single; var intersectPoint: TVector): boolean;
+	function ScreenVectorIntersectWithPlaneXY(const aScreenPoint: TVector; const z: single; var intersectPoint: TVector): boolean;
 
-    function MouseWorldPos(x, y: integer): TVector;
-    function ScreenVectorIntersectWithPlane(const aScreenPoint: TVector; const planePoint, planeNormal: TVector; var intersectPoint: TVector): boolean;
-    function ScreenToVector(const aPoint: TVector): TVector;
-    function ScreenToWorld(const aPoint: TVector): TVector;
+	function MouseWorldPos(x, y: integer): TVector;
+	function ScreenVectorIntersectWithPlane(const aScreenPoint: TVector; const planePoint, planeNormal: TVector; var intersectPoint: TVector): boolean;
+	function ScreenToVector(const aPoint: TVector): TVector;
+	function ScreenToWorld(const aPoint: TVector): TVector;
 
-    procedure performmousemoving(X, Y: integer);
-    procedure CloneSelection(switchnewobj: boolean);
+	procedure performmousemoving(X, Y: integer);
+	procedure CloneSelection(switchnewobj: boolean);
 
-		procedure importreadwriter();
+	procedure importreadwriter();
 
-		procedure makeundogroup();
-		procedure makeundo(iplf, ipli: integer; typ: integer; reason:string);
+	procedure makeundogroup();
+	procedure makeundo(iplf, ipli: integer; typ: integer; reason:string);
 
-		procedure QuickSort(iLo, iHi: Integer) ;
+	procedure QuickSort(iLo, iHi: Integer) ;
 
-		procedure updatenudgeedtors();
-    procedure btn_loadClick(Sender: TObject);
-    procedure Image5MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-		procedure GlPanelResize(Sender: TObject);
-    procedure ThreadedTimer1Timer(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-		procedure GlPanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-    procedure ThreadedTimer2Timer(Sender: TObject);
-    procedure oldListView1DblClick(Sender: TObject);
-    procedure btn_addcameraviewClick(Sender: TObject);
-		procedure saveeditorinfo();
-    procedure FormShow(Sender: TObject);
-    procedure btn_delcameraviewClick(Sender: TObject);
-    procedure btn_addtoprefabsClick(Sender: TObject);
-    procedure insertobject(ide: integer; px, py, pz: single);
-    procedure Deleteobject1Click(Sender: TObject);
-    procedure btn_deleteprefabClick(Sender: TObject);
-    procedure PopupMenu1Popup(Sender: TObject);
-    procedure inp_coordseditChange(Sender: TObject);
-    procedure TrackBar1Change(Sender: TObject);
-    procedure GlPanelDblClick(Sender: TObject);
-    procedure btn_inpClick(Sender: TObject);
-    procedure btn_clearClick(Sender: TObject);
-    procedure btn_aboutClick(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure Copy1Click(Sender: TObject);
-    procedure GlPanelMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
-    procedure renderpredabbtnClick(Sender: TObject);
-    procedure btn_renobjClick(Sender: TObject);
-    procedure GlPanelClick(Sender: TObject);
-    procedure GlPanelMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-    procedure updateeditorfromipl;
-    procedure Cloneobject1Click(Sender: TObject);
-		procedure btn_iplClick(Sender: TObject);
-    procedure btn_buildRCserverClick(Sender: TObject);
-    procedure randomfunc2Click(Sender: TObject);
-		procedure BitBtn3Click(Sender: TObject);
-    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: integer; MousePos: TPoint; var Handled: boolean);
-    procedure FormKeyPress(Sender: TObject; var Key: char);
-    procedure btn_impiplClick(Sender: TObject);
-		procedure btn_oldtestgtarClick(Sender: TObject);
-    procedure btn_camerahereClick(Sender: TObject);
-    procedure btn_previousideClick(Sender: TObject);
-    procedure btn_nextideClick(Sender: TObject);
-		procedure gencode();
-    procedure btn_showcodeClick(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure refreshselectedobjectineditors();
-    function cursorinview(): boolean;
-    procedure mapedited();
-    procedure renderbackground();
-    procedure a2mp;
-    procedure a2macc;
-    procedure btn_sosClick(Sender: TObject);
-    procedure ThreadedTimer3Timer(Sender: TObject);
-    procedure btn_randomthingsClick(Sender: TObject);
-    procedure cb_nvcClick(Sender: TObject);
-    procedure Edit4Click(Sender: TObject);
-		procedure btn_copyviewClick(Sender: TObject);
-		function getcameracmds(): string;
-    procedure btn_addnewobjClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
-    procedure cameraviewsDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
-    procedure ObjFilterChange(Sender: TObject);
-    procedure PFListFilteredDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
-    procedure btnclearfilterClick(Sender: TObject);
-		procedure renderoneClick(Sender: TObject);
-    procedure btn_renderrangesClick(Sender: TObject);
-    procedure btn_addprefabokClick(Sender: TObject);
-    procedure btn_gtfoaddideClick(Sender: TObject);
-		procedure addidetextChange(Sender: TObject);
-    procedure btndecClick(Sender: TObject);
-    procedure btnincClick(Sender: TObject);
-    procedure cb_mode_nolightingClick(Sender: TObject);
-		procedure SpeedButton2Click(Sender: TObject);
-    procedure RunDebug(gta_sa_exe: string; txtfile: string);
-    procedure btn_testmapClick(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
-    procedure btn_prefabresetzoomClick(Sender: TObject);
-    procedure inp_searchideChange(Sender: TObject);
-    procedure list_ideallClick(Sender: TObject);
+	procedure updatenudgeedtors();
+	procedure btn_loadClick(Sender: TObject);
+	procedure Image5MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+	procedure FormCreate(Sender: TObject);
+	procedure FormDestroy(Sender: TObject);
+	procedure GlPanelResize(Sender: TObject);
+	procedure ThreadedTimer1Timer(Sender: TObject);
+	procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+	procedure GlPanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+	procedure ThreadedTimer2Timer(Sender: TObject);
+	procedure oldListView1DblClick(Sender: TObject);
+	procedure btn_addcameraviewClick(Sender: TObject);
+	procedure saveeditorinfo();
+	procedure FormShow(Sender: TObject);
+	procedure btn_delcameraviewClick(Sender: TObject);
+	procedure btn_addtoprefabsClick(Sender: TObject);
+	procedure insertobject(ide: integer; px, py, pz: single);
+	procedure Deleteobject1Click(Sender: TObject);
+	procedure btn_deleteprefabClick(Sender: TObject);
+	procedure PopupMenu1Popup(Sender: TObject);
+	procedure inp_coordseditChange(Sender: TObject);
+	procedure TrackBar1Change(Sender: TObject);
+	procedure GlPanelDblClick(Sender: TObject);
+	procedure btn_inpClick(Sender: TObject);
+	procedure btn_clearClick(Sender: TObject);
+	procedure btn_aboutClick(Sender: TObject);
+	procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+	procedure Copy1Click(Sender: TObject);
+	procedure GlPanelMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
+	procedure renderpredabbtnClick(Sender: TObject);
+	procedure btn_renobjClick(Sender: TObject);
+	procedure GlPanelClick(Sender: TObject);
+	procedure GlPanelMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+	procedure updateeditorfromipl;
+	procedure Cloneobject1Click(Sender: TObject);
+	procedure btn_iplClick(Sender: TObject);
+	procedure btn_buildRCserverClick(Sender: TObject);
+	procedure randomfunc2Click(Sender: TObject);
+	procedure BitBtn3Click(Sender: TObject);
+	procedure FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: integer; MousePos: TPoint; var Handled: boolean);
+	procedure FormKeyPress(Sender: TObject; var Key: char);
+	procedure btn_impiplClick(Sender: TObject);
+	procedure btn_oldtestgtarClick(Sender: TObject);
+	procedure btn_camerahereClick(Sender: TObject);
+	procedure btn_previousideClick(Sender: TObject);
+	procedure btn_nextideClick(Sender: TObject);
+	procedure gencode();
+	procedure btn_showcodeClick(Sender: TObject);
+	procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
+	procedure refreshselectedobjectineditors();
+	function cursorinview(): boolean;
+	procedure mapedited();
+	procedure renderbackground();
+	procedure a2mp;
+	procedure a2macc;
+	procedure btn_sosClick(Sender: TObject);
+	procedure ThreadedTimer3Timer(Sender: TObject);
+	procedure btn_randomthingsClick(Sender: TObject);
+	procedure cb_nvcClick(Sender: TObject);
+	procedure Edit4Click(Sender: TObject);
+	procedure btn_copyviewClick(Sender: TObject);
+	function getcameracmds(): string;
+	procedure btn_addnewobjClick(Sender: TObject);
+	procedure SpeedButton1Click(Sender: TObject);
+	procedure cameraviewsDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
+	procedure ObjFilterChange(Sender: TObject);
+	procedure PFListFilteredDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
+	procedure btnclearfilterClick(Sender: TObject);
+	procedure renderoneClick(Sender: TObject);
+	procedure btn_renderrangesClick(Sender: TObject);
+	procedure btn_addprefabokClick(Sender: TObject);
+	procedure btn_gtfoaddideClick(Sender: TObject);
+	procedure addidetextChange(Sender: TObject);
+	procedure btndecClick(Sender: TObject);
+	procedure btnincClick(Sender: TObject);
+	procedure cb_mode_nolightingClick(Sender: TObject);
+	procedure SpeedButton2Click(Sender: TObject);
+	procedure RunDebug(gta_sa_exe: string; txtfile: string);
+	procedure btn_testmapClick(Sender: TObject);
+	procedure BitBtn1Click(Sender: TObject);
+	procedure btn_prefabresetzoomClick(Sender: TObject);
+	procedure inp_searchideChange(Sender: TObject);
+	procedure list_ideallClick(Sender: TObject);
 	procedure pleaseloadmethis(ide: integer);
-    procedure btn_newton_aClick(Sender: TObject);
-    procedure btn_buildworldClick(Sender: TObject);
-    procedure DebugShowCollision_POLY;
-		procedure lb_mmodeDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
-    procedure brn_importpasteClick(Sender: TObject);
-    procedure btn_transformallClick(Sender: TObject);
-    procedure btn_rstanglesClick(Sender: TObject);
-    procedure dassaddsaClick(Sender: TObject);
-    procedure fuckbuttonClick(Sender: TObject);
-    procedure nudgeleftClick(Sender: TObject);
-    procedure nudgerightClick(Sender: TObject);
-    procedure nudgeupClick(Sender: TObject);
-    procedure nudgedownClick(Sender: TObject);
-    procedure nudge_powerChange(Sender: TObject);
-		procedure nudgeraiseClick(Sender: TObject);
-    procedure nudgelowClick(Sender: TObject);
-    procedure BitBtn4Click(Sender: TObject);
-    procedure BitBtn5Click(Sender: TObject);
-		procedure btn_thingsgodownClick(Sender: TObject);
-    procedure BitBtn2Click(Sender: TObject);
-    procedure BitBtn6Click(Sender: TObject);
-    procedure btn_rotatelClick(Sender: TObject);
-    procedure btn_arrrClick(Sender: TObject);
-    procedure inp_axChange(Sender: TObject);
-    procedure BitBtn7Click(Sender: TObject);
-    procedure btn_loadwithcolsClick(Sender: TObject);
-    procedure btn_rxdClick(Sender: TObject);
-    procedure btn_rxuClick(Sender: TObject);
-    procedure btn_rydClick(Sender: TObject);
-    procedure btn_ryuClick(Sender: TObject);
-    procedure TabSheet2Resize(Sender: TObject);
-    procedure btn_cyclecolumnsClick(Sender: TObject);
-    procedure btn_undoClick(Sender: TObject);
-    procedure btn_reportClick(Sender: TObject);
-    procedure btn_closematerialClick(Sender: TObject);
+	procedure btn_newton_aClick(Sender: TObject);
+	procedure btn_buildworldClick(Sender: TObject);
+	procedure DebugShowCollision_POLY;
+	procedure lb_mmodeDrawItem(Control: TWinControl; Index: integer; Rect: TRect; State: TOwnerDrawState);
+	procedure brn_importpasteClick(Sender: TObject);
+	procedure btn_transformallClick(Sender: TObject);
+	procedure btn_rstanglesClick(Sender: TObject);
+	procedure dassaddsaClick(Sender: TObject);
+	procedure fuckbuttonClick(Sender: TObject);
+	procedure nudgeleftClick(Sender: TObject);
+	procedure nudgerightClick(Sender: TObject);
+	procedure nudgeupClick(Sender: TObject);
+	procedure nudgedownClick(Sender: TObject);
+	procedure nudge_powerChange(Sender: TObject);
+	procedure nudgeraiseClick(Sender: TObject);
+	procedure nudgelowClick(Sender: TObject);
+	procedure BitBtn4Click(Sender: TObject);
+	procedure BitBtn5Click(Sender: TObject);
+	procedure btn_thingsgodownClick(Sender: TObject);
+	procedure BitBtn2Click(Sender: TObject);
+	procedure BitBtn6Click(Sender: TObject);
+	procedure btn_rotatelClick(Sender: TObject);
+	procedure btn_arrrClick(Sender: TObject);
+	procedure inp_axChange(Sender: TObject);
+	procedure BitBtn7Click(Sender: TObject);
+	procedure btn_loadwithcolsClick(Sender: TObject);
+	procedure btn_rxdClick(Sender: TObject);
+	procedure btn_rxuClick(Sender: TObject);
+	procedure btn_rydClick(Sender: TObject);
+	procedure btn_ryuClick(Sender: TObject);
+	procedure TabSheet2Resize(Sender: TObject);
+	procedure btn_cyclecolumnsClick(Sender: TObject);
+	procedure btn_undoClick(Sender: TObject);
+	procedure btn_reportClick(Sender: TObject);
+	procedure btn_closematerialClick(Sender: TObject);
 	procedure Image15MouseDown(Sender: TObject; Button: TMouseButton;
+	Shift: TShiftState; X, Y: Integer);
+	procedure convert_some_collsClick(Sender: TObject);
+	procedure btn_exportmapClick(Sender: TObject);
+	procedure nudgepowerrotChange(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure Image17MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure convert_some_collsClick(Sender: TObject);
-    procedure btn_exportmapClick(Sender: TObject);
-    procedure nudgepowerrotChange(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure jseditorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton5Click(Sender: TObject);
 	private
-		{ Private declarations }
-		 procedure WMNCHitTest(var Msg: TWMNCHitTest) ; message WM_NCHitTest; 
+	{ Private declarations }
+	procedure WMNCHitTest(var Msg: TWMNCHitTest) ; message WM_NCHitTest; 
   public
     { Public declarations }
     DC: hdc;
@@ -575,35 +612,69 @@ tagScreenINFOEXA = record
 
   end;
 
-  TTxdUnit = class(TComponent)
-  public
-    filename: string;
+	TScriptSystem = class
+	public  
+		// Imports & excute script file
+		procedure ImportScript(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+
+		// Executes command
+		procedure Execute(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+
+		// Prints text in command line
+		procedure Print(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+		procedure alert(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+		procedure NativePrompt(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+		procedure NativeVersion(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+		procedure NativeLog(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+		
+	end;
+
+	TEditorControl = class(TBESENNativeObject)
+	protected
+		procedure ConstructObject(const ThisArgument: TBESENValue; Arguments: PPBESENValues; CountArguments: integer); Override;
+ 
+	public
+		constructor Create(AInstance: TObject; APrototype: TBESENObject=nil; AHasPrototypeProperty: longbool=false); Overload; Override;
+  
+	published
+		procedure SetCameraViewport(const ThisArgument: TBESENValue; Arguments: PPBESENValues; CountArguments: integer);
+		procedure GetCameraViewport(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);	
+		procedure ProduceSnapShot(const ThisArgument: TBESENValue; Arguments: PPBESENValues; CountArguments: integer);
+		procedure StreamerRemaining(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+		procedure StreamerProcess(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);		
+		procedure Raycast_Viewport(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+		// javascript side if implemented click, dblclick, right click.. ?
+	end;
+
+	TTxdUnit = class(TComponent)
+	public
+		filename: string;
 		texture:  Ttxdloader;
-    refcount: integer;
-  end;
+		refcount: integer;
+	end;
 
-  TDFFUnit = class(TComponent)
-  public
-    IDE:      integer;
+	TDFFUnit = class(TComponent)
+	public
+		IDE:      integer;
 		model:    TDffLoader;
-    markclear: boolean;
-    lastframe: longword;
-    lastdrawn: longword;
-    copyflags: longword;
-    lastrendercoords: TVector3f;
-    txdref:   integer;
-    collref:  TColObject;
-    colllist: integer;
-  end;
+		markclear: boolean;
+		lastframe: longword;
+		lastdrawn: longword;
+		copyflags: longword;
+		lastrendercoords: TVector3f;
+		txdref:   integer;
+		collref:  TColObject;
+		colllist: integer;
+	end;
 
-  Tmediastoreparent = class(TComponent)
-  public
+	Tmediastoreparent = class(TComponent)
+	public
 
 	end;
 
-  Tlodinfo = packed record
-    idenum:   integer;
-    distance: single;
+	Tlodinfo = packed record
+		idenum:   integer;
+		distance: single;
 	end;
 
 	Tlodarray = array[0..32] of Tlodinfo;
@@ -626,16 +697,19 @@ const
 
 var
 
-		MaxScreens: integer;
-		Screens: array of TScreen;
+	StreamingLock: TRTLCriticalSection;
+	ScriptSystem: TScriptSystem;
+	BesenInst: TBesen;
+	MaxScreens: integer;
+	Screens: array of TScreen;
 
 	undogroup: integer = 0;
 
 	blobs: single = 0.02;
 	nudgemp: single = 0.02;
 	nudgerotmp: single = 0.02;
-
-  materialcolors: array[0..12] of longword = ($505000, $909000, $535E64, $32C092, $405F77, $7EE1E7, $FCE9A7, $446993, $D5C8BF, $A0AAAF, $63A52E, $E19364, $07ABF1
+	
+	materialcolors: array[0..12] of longword = ($505000, $909000, $535E64, $32C092, $405F77, $7EE1E7, $FCE9A7, $446993, $D5C8BF, $A0AAAF, $63A52E, $E19364, $07ABF1
 
 {
 $005050,
@@ -654,299 +728,435 @@ $F1AB07
 });
 
   matmappers: array[0..178] of longword = (0, // Default
-    0, // Tarmac
-    0, // Tarmac (fucked)
-    0, // Tarmac (really fucked)
+	0, // Tarmac
+	0, // Tarmac (fucked)
+	0, // Tarmac (really fucked)
 	1, // Pavement
-    1, // Pavement (fucked)
-    2, // Gravel
-    1, // Concrete (fucked)
-    1, // Painted Ground
-    3, // Grass (short, lush)
-    3, // Grass (medium, lush)
-    3, // Grass (long, lush)
-    3, // Grass (short, dry)
-    3, // Grass (medium, dry)
-    3, // Grass (long, dry)
-		3, // Golf Grass (rough)
-		3, // Golf Grass (smooth)
-    3, // Steep Slidy Grass
-		9, // Steep Cliff
-    4, // Flower Bed
-    3, // Meadow
-    4, // Waste Ground
-    4, // Woodland Ground
-    10, // Vegetation
-    4, // Mud (wet)
-    4, // Mud (dry)
-    4, // Dirt
-    4, // Dirt Track
-    5, // Sand (deep)
-    5, // Sand (medium)
-    5, // Sand (compact)
-    5, // Sand (arid)
-    5, // Sand (more)
-    5, // Sand (beach)
-    1, // Concrete (beach)
-    9, // Rock (dry)
-    9, // Rock (wet)
-    9, // Rock (cliff)
-    11, // Water (riverbed)
-    11, // Water (shallow)
-    4, // Corn Field
-    10, // Hedge
-    7, // Wood (crates)
-    7, // Wood (solid)
-    7, // Wood (thin)
-		6, // Glass
-		6, // Glass Windows (large)
-    6, // Glass Windows (small)
-    12, // Empty1
-    12, // Empty2
-    8, // Garage Door
-    8, // Thick Metal Plate
-    8, // Scaffold Pole
-    8, // Lamp Post
-    8, // Metal Gate
-    8, // Metal Chain fence
-    8, // Girder
-    8, // Fire Hydrant
-    8, // Container
-		8, // News Vendor
-    12, // Wheelbase
-    12, // Cardboard Box
-    12, // Ped
-    8, // Car
-    8, // Car (panel)
-    8, // Car (moving component)
-    12, // Transparent Cloth
-    12, // Rubber
-    12, // Plastic
-    9, // Transparent Stone
-    7, // Wood (bench)
-    12, // Carpet
-    7, // Floorboard
-    7, // Stairs (wood)
-    5, // P Sand
-		5, // P Sand (dense)
-		5, // P Sand (arid)
-    5, // P Sand (compact)
-    5, // P Sand (rocky)
-    5, // P Sand (beach)
-    3, // P Grass (short)
-    3, // P Grass (meadow)
-    3, // P Grass (dry)
-    4, // P Woodland
-    4, // P Wood Dense
-    2, // P Roadside
-    5, // P Roadside Des
-    4, // P Flowerbed
-    4, // P Waste Ground
-    1, // P Concrete
-    12, // P Office Desk
-    12, // P 711 Shelf 1
-    12, // P 711 Shelf 2
-    12, // P 711 Shelf 3
-    12, // P Restuarant Table
-    12, // P Bar Table
-    5, // P Underwater (lush)
-    5, // P Underwater (barren)
-    5, // P Underwater (coral)
-    5, // P Underwater (deep)
-		4, // P Riverbed
-    2, // P Rubble
-    12, // P Bedroom Floor
-    12, // P Kitchen Floor
-    12, // P Livingroom Floor
-		12, // P corridor Floor
-		12, // P 711 Floor
-    12, // P Fast Food Floor
-    12, // P Skanky Floor
-    9, // P Mountain
-    4, // P Marsh
-    10, // P Bushy
-    10, // P Bushy (mix)
-    10, // P Bushy (dry)
+	1, // Pavement (fucked)
+	2, // Gravel
+	1, // Concrete (fucked)
+	1, // Painted Ground
+	3, // Grass (short, lush)
+	3, // Grass (medium, lush)
+	3, // Grass (long, lush)
+	3, // Grass (short, dry)
+	3, // Grass (medium, dry)
+	3, // Grass (long, dry)
+	3, // Golf Grass (rough)
+	3, // Golf Grass (smooth)
+	3, // Steep Slidy Grass
+	9, // Steep Cliff
+	4, // Flower Bed
+	3, // Meadow
+	4, // Waste Ground
+	4, // Woodland Ground
+	10, // Vegetation
+	4, // Mud (wet)
+	4, // Mud (dry)
+	4, // Dirt
+	4, // Dirt Track
+	5, // Sand (deep)
+	5, // Sand (medium)
+	5, // Sand (compact)
+	5, // Sand (arid)
+	5, // Sand (more)
+	5, // Sand (beach)
+	1, // Concrete (beach)
+	9, // Rock (dry)
+	9, // Rock (wet)
+	9, // Rock (cliff)
+	11, // Water (riverbed)
+	11, // Water (shallow)
+	4, // Corn Field
+	10, // Hedge
+	7, // Wood (crates)
+	7, // Wood (solid)
+	7, // Wood (thin)
+	6, // Glass
+	6, // Glass Windows (large)
+	6, // Glass Windows (small)
+	12, // Empty1
+	12, // Empty2
+	8, // Garage Door
+	8, // Thick Metal Plate
+	8, // Scaffold Pole
+	8, // Lamp Post
+	8, // Metal Gate
+	8, // Metal Chain fence
+	8, // Girder
+	8, // Fire Hydrant
+	8, // Container
+	8, // News Vendor
+	12, // Wheelbase
+	12, // Cardboard Box
+	12, // Ped
+	8, // Car
+	8, // Car (panel)
+	8, // Car (moving component)
+	12, // Transparent Cloth
+	12, // Rubber
+	12, // Plastic
+	9, // Transparent Stone
+	7, // Wood (bench)
+	12, // Carpet
+	7, // Floorboard
+	7, // Stairs (wood)
+	5, // P Sand
+	5, // P Sand (dense)
+	5, // P Sand (arid)
+	5, // P Sand (compact)
+	5, // P Sand (rocky)
+	5, // P Sand (beach)
+	3, // P Grass (short)
+	3, // P Grass (meadow)
+	3, // P Grass (dry)
+	4, // P Woodland
+	4, // P Wood Dense
+	2, // P Roadside
+	5, // P Roadside Des
+	4, // P Flowerbed
+	4, // P Waste Ground
+	1, // P Concrete
+	12, // P Office Desk
+	12, // P 711 Shelf 1
+	12, // P 711 Shelf 2
+	12, // P 711 Shelf 3
+	12, // P Restuarant Table
+	12, // P Bar Table
+	5, // P Underwater (lush)
+	5, // P Underwater (barren)
+	5, // P Underwater (coral)
+	5, // P Underwater (deep)
+	4, // P Riverbed
+	2, // P Rubble
+	12, // P Bedroom Floor
+	12, // P Kitchen Floor
+	12, // P Livingroom Floor
+	12, // P corridor Floor
+	12, // P 711 Floor
+	12, // P Fast Food Floor
+	12, // P Skanky Floor
+	9, // P Mountain
+	4, // P Marsh
+	10, // P Bushy
+	10, // P Bushy (mix)
+	10, // P Bushy (dry)
 	10, // P Bushy (mid)
-    3, // P Grass (wee flowers)
-    3, // P Grass (dry, tall)
-    3, // P Grass (lush, tall)
-    3, // P Grass (green, mix)
-    3, // P Grass (brown, mix)
-    3, // P Grass (low)
-    3, // P Grass (rocky)
-    3, // P Grass (small trees)
-    4, // P Dirt (rocky)
-    4, // P Dirt (weeds)
-    3, // P Grass (weeds)
-    4, // P River Edge
-    1, // P Poolside
-    4, // P Forest (stumps)
-    4, // P Forest (sticks)
-    4, // P Forest (leaves)
-    5, // P Desert Rocks
-    4, // Forest (dry)
-    4, // P Sparse Flowers
-    2, // P Building Site
-		1, // P Docklands
-		1, // P Industrial
-    1, // P Industrial Jetty
-    1, // P Concrete (litter)
-    1, // P Alley Rubbish
-    2, // P Junkyard Piles
-		4, // P Junkyard Ground
-    4, // P Dump
-    5, // P Cactus Dense
-    1, // P Airport Ground
-    4, // P Cornfield
-    3, // P Grass (light)
-    3, // P Grass (lighter)
-    3, // P Grass (lighter 2)
-    3, // P Grass (mid 1)
-    3, // P Grass (mid 2)
-    3, // P Grass (dark)
-    3, // P Grass (dark 2)
-    3, // P Grass (dirt mix)
-    9, // P Riverbed (stone)
-    4, // P Riverbed (shallow)
-    4, // P Riverbed (weeds)
-    5, // P Seaweed
-    12, // Door
-    12, // Plastic Barrier
-    3, // Park Grass
-    9, // Stairs (stone)
-    8, // Stairs (metal)
-    12, // Stairs (carpet)
-    8, // Floor (metal)
-		1, // Floor (concrete)
-		12, // Bin Bag
-    8, // Thin Metal Sheet
-    8, // Metal Barrel
+	3, // P Grass (wee flowers)
+	3, // P Grass (dry, tall)
+	3, // P Grass (lush, tall)
+	3, // P Grass (green, mix)
+	3, // P Grass (brown, mix)
+	3, // P Grass (low)
+	3, // P Grass (rocky)
+	3, // P Grass (small trees)
+	4, // P Dirt (rocky)
+	4, // P Dirt (weeds)
+	3, // P Grass (weeds)
+	4, // P River Edge
+	1, // P Poolside
+	4, // P Forest (stumps)
+	4, // P Forest (sticks)
+	4, // P Forest (leaves)
+	5, // P Desert Rocks
+	4, // Forest (dry)
+	4, // P Sparse Flowers
+	2, // P Building Site
+	1, // P Docklands
+	1, // P Industrial
+	1, // P Industrial Jetty
+	1, // P Concrete (litter)
+	1, // P Alley Rubbish
+	2, // P Junkyard Piles
+	4, // P Junkyard Ground
+	4, // P Dump
+	5, // P Cactus Dense
+	1, // P Airport Ground
+	4, // P Cornfield
+	3, // P Grass (light)
+	3, // P Grass (lighter)
+	3, // P Grass (lighter 2)
+	3, // P Grass (mid 1)
+	3, // P Grass (mid 2)
+	3, // P Grass (dark)
+	3, // P Grass (dark 2)
+	3, // P Grass (dirt mix)
+	9, // P Riverbed (stone)
+	4, // P Riverbed (shallow)
+	4, // P Riverbed (weeds)
+	5, // P Seaweed
+	12, // Door
+	12, // Plastic Barrier
+	3, // Park Grass
+	9, // Stairs (stone)
+	8, // Stairs (metal)
+	12, // Stairs (carpet)
+	8, // Floor (metal)
+	1, // Floor (concrete)
+	12, // Bin Bag
+	8, // Thin Metal Sheet
+	8, // Metal Barrel
 	12, // Plastic Cone
-    12, // Plastic Dumpster
-    8, // Metal Dumpster
-    7, // Wood Picket Fence
-    7, // Wood Slatted Fence
-    7, // Wood Ranch Fence
-    6, // Unbreakable Glass
-    12, // Hay Bale
-    12, // Gore
-    12 // Rail Track
+	12, // Plastic Dumpster
+	8, // Metal Dumpster
+	7, // Wood Picket Fence
+	7, // Wood Slatted Fence
+	7, // Wood Ranch Fence
+	6, // Unbreakable Glass
+	12, // Hay Bale
+	12, // Gore
+	12 // Rail Track
     );
 
 
 	vdata: array [0..11] of Tvector3f = ((-X, 0.0, Z), (X, 0.0, Z), (-X, 0.0, -Z), (X, 0.0, -Z), (0.0, Z, X), (0.0, Z, -X), (0.0, -Z, X), (0.0, -Z, -X), (Z, X, 0.0), (-Z, X, 0.0), (Z, -X, 0.0), (-Z, -X, 0.0));
 
-  tindices: array [0..19] of array [0..2] of GLint = ((0, 4, 1), (0, 9, 4), (9, 5, 4), (4, 5, 8), (4, 8, 1), (8, 10, 1), (8, 3, 10), (5, 3, 8), (5, 2, 3), (2, 7, 3), (7, 10, 3), (7, 6, 10), (7, 11, 6), (11, 0, 6), (0, 1, 6), (6, 1, 10), (9, 0, 11), (9, 11, 2), (9, 2, 5), (7, 2, 11));
+	tindices: array [0..19] of array [0..2] of GLint = ((0, 4, 1), (0, 9, 4), (9, 5, 4), (4, 5, 8), (4, 8, 1), (8, 10, 1), (8, 3, 10), (5, 3, 8), (5, 2, 3), (2, 7, 3), (7, 10, 3), (7, 6, 10), (7, 11, 6), (11, 0, 6), (0, 1, 6), (6, 1, 10), (9, 0, 11), (9, 11, 2), (9, 2, 5), (7, 2, 11));
 
-  cursorseen: boolean = True;
+	cursorseen: boolean = True;
 
-  GtaEditor: TGtaEditor;
-  GtaObject: Tmediastoreparent;
+	GtaEditor: TGtaEditor;
+	GtaObject: Tmediastoreparent;
 
-  nworld: PNewtonWorld = nil;
+	nworld: PNewtonWorld = nil;
 
-  newtonshapes: array[0..60000,0..1] of PNewtonCollision;
-  newtonvehicles: array[0..2000] of PNewtonBody;
+	newtonshapes: array[0..60000,0..1] of PNewtonCollision;
+	newtonvehicles: array[0..2000] of PNewtonBody;
 
-  mousecontrol: boolean = False;
+	mousecontrol: boolean = False;
 
-  mousemovemodifier: single = default_move_speed;
+	mousemovemodifier: single = default_move_speed;
 
-  working_gta_dir: string;
+	working_gta_dir: string;
 
-  gcp:   boolean = False;
-  oldcp: Tpoint;
+	gcp:   boolean = False;
+	oldcp: Tpoint;
 
-  keys: TKeyboardState;
+	keys: TKeyboardState;
 
-  mmp:    single = 1.0; // timed multiplier thing
-  movacc: single = 1.0;
-  hadtf:  boolean = False;
+	mmp:    single = 1.0; // timed multiplier thing
+	movacc: single = 1.0;
+	hadtf:  boolean = False;
 
-  fpsclock:  integer;
-  LastTime, ElapsedTime, AppStart: longword;
-  fpsframes: longword = 0;
+	fpsclock:  integer;
+	LastTime, ElapsedTime, AppStart: longword;
+	fpsframes: longword = 0;
 
-  nw: Tvector3f = (-2048, 2048, 100.0);
-  SE: Tvector3f = (2048, -2048, 0.0);
+	nw: Tvector3f = (-2048, 2048, 100.0);
+	SE: Tvector3f = (2048, -2048, 0.0);
 
-  identity: TMatrix4f = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1));
+	identity: TMatrix4f = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1));
 
-  lastimg:   integer;
-  maploaded: boolean = False;
+	lastimg:   integer;
+	maploaded: boolean = False;
 
-  city:   TGTAMAP;
+	city:   TGTAMAP;
 	Camera: TCamera;
 
-  is_picking: boolean = False;
+	is_picking: boolean = False;
 	buffer:   array[1..1400] of longword;  // Selection Buffer
-  hits:     integer;                     // Number of hits
-  viewport: tvector4i;
+	hits:     integer;                     // Number of hits
+	viewport: tvector4i;
 
-  selipl:  longword = 0;
-  selitem: longword = 0;
+	selipl:  longword = 0;
+	selitem: longword = 0;
 
-  sel_ide: integer;
+	sel_ide: integer;
 
-  Selection: gluint;
+	Selection: gluint;
 
-  cx, cy:  integer;
-  mouse3d: Tvector3f = (0, 0, 0);
+	cx, cy:  integer;
+	mouse3d: Tvector3f = (0, 0, 0);
 
-  loadnext: TStrings;
+	loadnext: TStrings;
 
-  codeupdating: boolean = False;
+	codeupdating: boolean = False;
 
-  tx, ty:    integer;
-  nightmode: boolean = False;
+	tx, ty:    integer;
+	nightmode: boolean = False;
 
-  // both -90 = topdown
-  rotation_x_axis: single = -90.0;
-  rotation_y_axis: single = 350.0;
-  zoom:    single = 50;
-  zoomadd: single = 0;
+	// both -90 = topdown
+	rotation_x_axis: single = -90.0;
+	rotation_y_axis: single = 350.0;
+	zoom:    single = 50;
+	zoomadd: single = 0;
 
-  StartV:      TVector3d;
-  MouseButton: integer;
-  MouseXVal, MouseYVal: integer;
+	StartV:      TVector3d;
+	MouseButton: integer;
+	MouseXVal, MouseYVal: integer;
 	Speed, MoveMode, AxisMode: byte;
 
-  CenX, CenY, CenZ: glFloat;
+	CenX, CenY, CenZ: glFloat;
 
-  prefabrenderid: string;
-  prefabextrastr: string = '';
+	prefabrenderid: string;
+	prefabextrastr: string = '';
 
-  cameradrag: boolean = False;
+	cameradrag: boolean = False;
 	lastmouse:  Tpoint;
 
-  vehicletxd, particletxd, backgroundtxd: integer;
+	vehicletxd, particletxd, backgroundtxd: integer;
 
-  map_water_edge:    single = 3000;
-  water_extreme_end: single = 15500;
+	map_water_edge:    single = 3000;
+	water_extreme_end: single = 15500;
 
-  light_position: array[0..3] of GLfloat = (0, 0, 1000, 1);
-  light_ambient:  array[0..3] of GLfloat = (1, 1, 1, 1);
+	light_position: array[0..3] of GLfloat = (0, 0, 1000, 1);
+	light_ambient:  array[0..3] of GLfloat = (1, 1, 1, 1);
 
-  MatDiffuse:  array [0..3] of GLfloat = (1.0, 1.0, 1.0, 1.0);
-  MatSpecular: array [0..3] of GLfloat = (1.0, 1.0, 1.0, 1.0);
-  MatShine:    GLfloat = 30.0;
+	MatDiffuse:  array [0..3] of GLfloat = (1.0, 1.0, 1.0, 1.0);
+	MatSpecular: array [0..3] of GLfloat = (1.0, 1.0, 1.0, 1.0);
+	MatShine:    GLfloat = 30.0;
 
-  lastMouseWorldPos: Tvector;
+	lastMouseWorldPos: Tvector;
 
 const
-  CAMERA_SPEED = 0.005;
+	CAMERA_SPEED = 0.005;
 
-  nxt: array[0..2] of integer = (1, 2, 0);
+	nxt: array[0..2] of integer = (1, 2, 0);
 
 function GetMonitorInfoA(hScreen: HScreen; lpScreenInfo: PScreenInfoEXA): boolean; stdcall; external user32;
 function EnumDisplayMonitors(hdc: HDC; lprcIntersect: PRect; lpfnEnumProc: TScreenEnumProc; lData: pointer): boolean; stdcall; external user32;
+
+procedure RunScript(const Filename: String);
+procedure ExecuteCommand(const Command: String);
 
 implementation
 
 uses U_main, u_sowcode, u_carcolors, u_report;
 
 {$R *.DFM}
+
+procedure runbuffer(buffa: string);
+begin
+
+   try
+	  BesenInst.Execute(buffa);
+   except
+      on e: EBESENError do
+		GtaEditor.logger.lines.add(Format('%s ( %s | Line %d ): %s', [e.Name, 'buffer', TBESEN(BesenInst).LineNumber, e.Message]));
+      
+      on e: exception do
+        GtaEditor.logger.lines.add(Format('%s ( %s | Line %d ): %s', ['Exception', 'buffer', TBESEN(BesenInst).LineNumber, e.Message]));
+   end;
+
+   GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+
+end;
+
+procedure RunScript(const Filename: String);
+var
+	f: TStream;
+    s: TStringStream;
+    cmd: String;
+begin
+
+	if Trim(Filename) = '' then
+	begin
+		GtaEditor.logger.lines.add('No valid script file specified.');
+		GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+		Exit;
+	end;
+  
+	if not FileExists(Filename) then
+	begin
+		GtaEditor.logger.lines.add('File does not exist: ' + Filename);
+		GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+		Exit;
+	end;
+  
+	if ExtractFileExt(Filename) <> '.js' then begin
+		GtaEditor.logger.lines.add('Warning: ' + Filename + ' may not be a valid JavaScript file');
+		GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+	end;
+  
+	f := TFileStream.Create(Filename, fmOpenRead);
+	try
+		s := TStringStream.Create('');
+		try
+			s.CopyFrom(f,f.Size);
+			cmd := s.DataString;
+		finally
+			s.Free;
+		end;
+	finally
+		f.Free;
+	end;
+ 
+	runbuffer(cmd);
+
+end;
+ 
+// Execute JavaScript command(s)
+procedure ExecuteCommand(const Command: String);
+begin
+  try
+    BesenInst.Execute(Command);
+  except
+	on e: EBESENError do begin
+	  GtaEditor.logger.lines.add(e.Name + ': ' + BesenInst.ToStr(e.Value));
+	  GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+	  end;
+  end;
+end;
+
+procedure TScriptSystem.ImportScript(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+begin
+  RunScript(TBESEN(BesenInst).ToStr(Arguments^[0]^));
+end;
+ 
+procedure TScriptSystem.Execute(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var AResult:TBESENValue);
+begin
+  ExecuteCommand(TBESEN(BesenInst).ToStr(Arguments^[0]^));
+end;
+
+procedure TScriptSystem.Print(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+var
+	i:integer;
+	v:PBESENValue;
+	fOutput:widestring;
+
+	procedure writeit(s:widestring);
+	begin
+		fOutput:=fOutput+s;
+	end;
+ 
+begin
+ fOutput:='';
+ ResultValue.ValueType:=bvtUNDEFINED;
+ for i:=0 to CountArguments-1 do begin
+  v:=Arguments^[i];
+  case v^.ValueType of
+   bvtUNDEFINED:begin
+    writeit('undefined');
+   end;
+   bvtNULL:begin
+    writeit('null');
+   end;
+   bvtBOOLEAN:begin
+    if v^.Bool then begin
+     writeit('true');
+    end else begin
+     writeit('false');
+    end;
+   end;
+   bvtNUMBER:begin
+    writeit(BESENFloatToStr(v^.Num));
+   end;
+   bvtSTRING:begin
+    writeit(v^.Str);
+   end;                                                   
+   bvtOBJECT:begin
+	writeit(TBESEN(BesenInst).ToStr(v^) + ' ' + BesenInst.ToStr(BesenInst.JSONStringify(BESENObjectValue(v^.Obj))) );
+   end;
+   bvtREFERENCE:begin
+    writeit('reference');
+   end;
+  end;
+ end;
+
+	GtaEditor.logger.lines.add(BESENEncodeString(BESENUTF16ToUTF8(fOutput),UTF_8,BESENLocaleCharset));
+	GtaEditor.logger.CaretY:= GtaEditor.logger.Lines.Count;
+ 
+end;
 
 function CreateGlRotateMatrix(angle, x, y, z: single): TMatrix;
 var
@@ -2305,13 +2515,22 @@ var
           glend;
 
           if ((distance < 0.0) or (distance < drawdistance.position) and (LoadedModelIndex = -1)) then
-          begin
-            if loadnext.Count < streamlimit.Position then
-              if loadnext.indexof(IntToStr(id)) = -1 then
-              begin
-				// logger.lines.add('adding to streamer: ' + inttostr(id));
-                pleaseloadmethis(id);
-              end;
+		  begin
+		  
+          	try
+				EnterCriticalSection(StreamingLock);
+				
+				if loadnext.Count < streamlimit.Position then
+				  if loadnext.indexof(IntToStr(id)) = -1 then
+				  begin
+					// logger.lines.add('adding to streamer: ' + inttostr(id));
+					pleaseloadmethis(id);
+				  end;
+				  
+			finally
+				LeaveCriticalSection(StreamingLock);
+			end;
+			  
 		  end;
 
         end;
@@ -3061,6 +3280,7 @@ begin
   maploaded := True;
 
   btn_inp.Enabled     := True;
+    SpeedButton4.enabled:= true;
   brn_importpaste.Enabled := True;
 	btn_clear.Enabled   := True;
 	btn_undo.Enabled   := True;
@@ -3095,38 +3315,107 @@ begin
   SendMessage(Handle, WM_NCLBUTTONDOWN, HTBOTTOMRIGHT, 0);
 end;
 
+function EnumScreensProc(hm: HScreen; dc: HDC; r: PRect; Data: Pointer): boolean; stdcall;
+var
+	moninfo: tagScreenINFOEXA;
+	display: TDisplayDeviceA;
+begin
+	
+	// 1 new Screen!
+
+	setlength(Screens, length(Screens) + 1);
+
+	// get Screen resolution, flags, etc..
+	fillchar(moninfo, sizeof(moninfo), 0);
+	moninfo.cbSize := 72;
+	GetMonitorInfoA(hm, @moninfo);
+
+	//  move(moninfo.szDevice, Screens[length(Screens)-1].name, 32); // no longer used, see below
+	move(r^, Screens[length(Screens) - 1].Rect, sizeof(Trect));
+	Screens[length(Screens) - 1].def := moninfo.dwFlags and ScreenINFOF_PRIMARY = ScreenINFOF_PRIMARY;
+
+	//Screens[length(Screens) - 1].depth := GetDeviceCaps(hm, BITSPIXEL);
+
+	// get proper device name
+	display.cb := sizeof(display);
+	EnumDisplayDevicesA(nil, length(Screens) - 1, display, 0);
+
+	// DeviceString contains graphic card's name.
+	// DeviceString contains monitor's name.
+	
+	move(display.DeviceString, Screens[length(Screens) - 1].Name, length(Screens[length(Screens) - 1].name));
+
+	move(display.DeviceName, Screens[length(Screens) - 1].device, length(Screens[length(Screens) - 1].device));
+
+	move(moninfo.szDevice, Screens[length(Screens) - 1].dDevice, length(Screens[length(Screens) - 1].dDevice));
+
+	Result := True;
+	
+end;
+
 procedure TGtaEditor.FormCreate(Sender: TObject);
 var
-  pfd: TPIXELFORMATDESCRIPTOR;
+	pfd: TPIXELFORMATDESCRIPTOR;
 	pf:  integer;
 	buffer: pchar;
+
+	i: integer;
+	tempdc: hdc;
+	reg: tregistry;
+	
 begin
 
-  working_gta_dir := extractfiledir(application.exename);
 
-  nworld := NewtonCreate;
-  NewtonSetWorldSize(nworld, @nw[0], @se[0]);
+	InitializeCriticalSection(StreamingLock); 
 
-  DecimalSeparator := '.';
-  opengl12.LoadOpenGL;
+	camera.Create;
 
-  // OpenGL initialize
-  dc := GetDC(GlPanel.Handle);
+	working_gta_dir := extractfiledir(application.exename);
 
-  // PixelFormat
-  pfd.nSize      := sizeof(pfd);
-  pfd.nVersion   := 1;
-  pfd.dwFlags    := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER or 0;
-  pfd.iPixelType := PFD_TYPE_RGBA;      // PFD_TYPE_RGBA or PFD_TYPEINDEX
-  pfd.cColorBits := 32;
+	nworld := NewtonCreate;
+	NewtonSetWorldSize(nworld, @nw[0], @se[0]);
 
-  pf := ChoosePixelFormat(dc, @pfd);   // Returns format that most closely matches above pixel format
-  SetPixelFormat(dc, pf, @pfd);
+	DecimalSeparator := '.';
+	opengl12.LoadOpenGL;
 
-  rc := wglCreateContext(dc);    // Rendering Context = window-glCreateContext
-  wglMakeCurrent(dc, rc);        // Make the DC (Form1) the rendering Context
+	// OpenGL initialize
+	dc := GetDC(GlPanel.Handle);
+
+	// PixelFormat
+	pfd.nSize      := sizeof(pfd);
+	pfd.nVersion   := 1;
+	pfd.dwFlags    := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER or 0;
+	pfd.iPixelType := PFD_TYPE_RGBA;      // PFD_TYPE_RGBA or PFD_TYPEINDEX
+	pfd.cColorBits := 32;
+
+	pf := ChoosePixelFormat(dc, @pfd);   // Returns format that most closely matches above pixel format
+	SetPixelFormat(dc, pf, @pfd);
+
+	rc := wglCreateContext(dc);    // Rendering Context = window-glCreateContext
+	wglMakeCurrent(dc, rc);        // Make the DC (Form1) the rendering Context
 
 	Buffer:= glGetString(GL_RENDERER);
+
+	TempDC:= GetDC(GetDesktopWindow());
+	i:= GetDeviceCaps(TempDC, BITSPIXEL);
+
+	if length(Screens) = 0 then
+		EnumDisplayMonitors(0, nil, @EnumScreensProc, self);
+
+	for i:= 0 to high(Screens) do begin
+
+		logger.lines.add(format('Screen %s device %s driver %s default: %d resolution: %dx%d location (%d, %d ) ',
+		[Screens[i].Name, Screens[i].device, Screens[i].dDevice, integer(Screens[i].def),
+
+		Screens[i].rect.right - Screens[i].rect.left, Screens[i].rect.bottom - Screens[i].rect.top,
+
+		Screens[i].rect.left, Screens[i].rect.top
+
+		] ));
+
+	end;
+
+	setlength(Screens, 0);
 
 	if (Buffer = 'GDI Generic') then begin
 		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + buffer);
@@ -3140,21 +3429,23 @@ begin
 		halt;
 	end;
 
-	// Initialist GL environment variables
-  glInit;
-  GlPanelResize(Sender);    // sets up the perspective
-  AppStart := GetTickCount();
 
-  opengl12.ReadExtensions;
+	// Initialist GL environment variables
+	glInit;
+	GlPanelResize(Sender);    // sets up the perspective
+	AppStart := GetTickCount();
+
+	opengl12.ReadExtensions;
 	opengl12.ReadWGLExtensions;
 
-  // when the app has spare time, render the GL scene
-  Application.OnIdle := Idle;
+	// when the app has spare time, render the GL scene
+	Application.OnIdle := Idle;
 
-  GtaObject := Tmediastoreparent.Create(application);
-  loadnext  := TStringList.Create;
+	GtaObject := Tmediastoreparent.Create(application);
+	loadnext  := TStringList.Create;
 
-  Cameraclass.thispanel := GlPanel.handle;
+	Cameraclass.thispanel := GlPanel.handle;
+
 end;
 
 procedure TGtaEditor.FormDestroy(Sender: TObject);
@@ -3166,11 +3457,14 @@ end;
 
 procedure TGtaEditor.GlPanelResize(Sender: TObject);
 begin
+
   glViewport(0, 0, GlPanel.Width, GlPanel.Height);    // Set the viewport for the OpenGL window
   glMatrixMode(GL_PROJECTION);        // Change Matrix Mode to Projection
   glLoadIdentity();                   // Reset View
-  gluPerspective(45.0, GlPanel.Width / GlPanel.Height, 0.2, 10000.0);  // Do the perspective calculations. Last value = max clipping depth
 
+  // todo: this is needed for javascript scripting
+  gluPerspective(Camera.fovy, GlPanel.Width / GlPanel.Height, Camera.zNear, Camera.zFar);  // Do the perspective calculations. Last value = max clipping depth
+  
   //  gluPerspective( 10.0, GlPanel.Width / GlPanel.Height, 0.2, 10000.0);  // Do the perspective calculations. Last value = max clipping depth
 
   glMatrixMode(GL_MODELVIEW);         // Return to the modelview matrix
@@ -3202,6 +3496,8 @@ var
   collindex: integer;
 begin
 
+// todo: this function is not thread safe yet it's called from several threads.
+
   if is_picking = True then
     exit;
 
@@ -3223,7 +3519,8 @@ begin
 
     except
       continue;
-    end;
+	end;
+	
     if fobj = nil then
       continue;
 
@@ -3305,16 +3602,16 @@ begin
           statuslabel.Caption := fobj.TextureName + '.txd';
           application.ProcessMessages;
 
-					switch2img(fobj.txdinimg);
+		switch2img(fobj.txdinimg);
 
-					//        logger.Lines.add(fobj.TextureName + '.txd');
+		//        logger.Lines.add(fobj.TextureName + '.txd');
 {
-					if fobj.TextureName + '.txd' = 'balloon_texts.txd' then begin
-						showmessage(format('lastimg is %s. file index %d. ofs %d size %d img %s', [lastimg, fobj.Textureidx, IMGGetThisFile(fobj.Textureidx).startblock * 2048, IMGGetThisFile(fobj.Textureidx).sizeblocks * 2048, city.imgfile[fobj.txdinimg]]));
-					end;
+		if fobj.TextureName + '.txd' = 'balloon_texts.txd' then begin
+			showmessage(format('lastimg is %s. file index %d. ofs %d size %d img %s', [lastimg, fobj.Textureidx, IMGGetThisFile(fobj.Textureidx).startblock * 2048, IMGGetThisFile(fobj.Textureidx).sizeblocks * 2048, city.imgfile[fobj.txdinimg]]));
+		end;
 }
-					texbuff      := Tmemorystream.Create;
-					texbuff.size := IMGGetThisFile(fobj.Textureidx).sizeblocks * 2048;
+		texbuff      := Tmemorystream.Create;
+		texbuff.size := IMGGetThisFile(fobj.Textureidx).sizeblocks * 2048;
 
           IMGExportBuffer(fobj.Textureidx, texbuff.Memory);
           newtex.texture.loadfromstream(texbuff, fobj.TextureName + '.txd');
@@ -4014,10 +4311,17 @@ begin
   if avail2render = -1 then
   begin
 
-	if loadnext.indexof(IntToStr(fobj.ID)) = -1 then
-	  pleaseloadmethis(fobj.ID);
+	try
 
-	StreamView(); // force loading of the object id we need.
+		if loadnext.indexof(IntToStr(fobj.ID)) = -1 then
+			pleaseloadmethis(fobj.ID);
+
+		EnterCriticalSection(StreamingLock);
+		StreamView(); // force loading of the object id we need.
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+
 	avail2render := rendermodel(fobj.ID);
   end;
 
@@ -4025,10 +4329,18 @@ begin
 
   if dffloader = nil then
   begin
-	if loadnext.indexof(IntToStr(fobj.ID)) = -1 then
-	  pleaseloadmethis(fobj.ID);
 
-	StreamView(); // force loading of the object id we need.
+	try
+
+		if loadnext.indexof(IntToStr(fobj.ID)) = -1 then
+			pleaseloadmethis(fobj.ID);
+
+		EnterCriticalSection(StreamingLock);
+		StreamView(); // force loading of the object id we need.
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+	
   end
   else
   begin
@@ -4074,7 +4386,7 @@ begin
 
     glMatrixMode(GL_MODELVIEW);         // Return to the modelview matrix
 
-    glViewport(0, 0, renderw, renderh);    // Set the viewport for the OpenGL window
+	glViewport(0, 0, renderw, renderh);    // Set the viewport for the OpenGL window
 
     glColor4f(1, 1, 1, 1);
 
@@ -4894,7 +5206,14 @@ begin
     mousemovemodifier := default_move_speed;
 
   // stream-in
-  StreamView;
+	
+	try
+		EnterCriticalSection(StreamingLock);
+		StreamView(); // force loading of the object id we need.
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+	
 
   UnloadUnneededTextures;
 end;
@@ -5544,92 +5863,90 @@ end;
 
 procedure TGtaEditor.refreshselectedobjectineditors;
 var
-  L, i, collindex: integer;
-  obj: Pobjs;
-  lmi, realptr: integer;
+	L, i, collindex: integer;
+	obj: Pobjs;
+	lmi, realptr: integer;
 begin
 
-  lmi := -1;
+	lmi := -1;
 
-  obj := findIDE(city.IPL[selipl].InstObjects[selitem].id, False);
+	obj := findIDE(city.IPL[selipl].InstObjects[selitem].id, False);
 
-  if obj = nil then
-    exit;
+	if obj = nil then
+		exit;
 
-  lmi := city.IPL[selipl].InstObjects[selitem].LoadedModelIndex;
+	lmi := city.IPL[selipl].InstObjects[selitem].LoadedModelIndex;
 
-  sel_ide := obj.ID;
+	sel_ide := obj.ID;
 
-  list_dfftextures.Lines.Clear;
-  txdtextures.Lines.Clear;
+	list_dfftextures.Lines.Clear;
+	txdtextures.Lines.Clear;
 
-  updateeditorfromipl;
+	updateeditorfromipl;
 
 	iadv_iden.Text := IntToStr(city.IPL[selipl].InstObjects[selitem].id);
 	mdl_name.Text := obj.ModelName;
 	ainp_interior.Text := IntToStr(city.IPL[selipl].InstObjects[selitem].int_id);
 	extras.Clear;
 
-  extras.Lines.add(format('item %d lod %d', [selitem, city.IPL[selipl].InstObjects[selitem].lod]));
+	extras.Lines.add(format('item %d lod %d', [selitem, city.IPL[selipl].InstObjects[selitem].lod]));
 
-  if city.IPL[selipl].InstObjects[selitem].lod <> -1 then
-    extras.Lines.add(format('lod info: ide %d', [
-      city.IPL[selipl].InstObjects[city.IPL[selipl].InstObjects[selitem].lod].id
-      ]));
+	if city.IPL[selipl].InstObjects[selitem].lod <> -1 then
+		extras.Lines.add(format('lod info: ide %d', [city.IPL[selipl].InstObjects[city.IPL[selipl].InstObjects[selitem].lod].id]));
 
-  if city.idemapping[city.IPL[selipl].InstObjects[selitem].id] <> nil then
-  begin
+	if city.idemapping[city.IPL[selipl].InstObjects[selitem].id] <> nil then
+	begin
 
-    with city.idemapping[city.IPL[selipl].InstObjects[selitem].id] as TIDEinforecord do
-    begin
+	with city.idemapping[city.IPL[selipl].InstObjects[selitem].id] as TIDEinforecord do
+	begin
 
-      if lmi <> -1 then
-      begin
-        if (GtaObject.Components[lmi] as TDFFUnit).collref <> nil then
-          realptr := integer((GtaObject.Components[lmi] as TDFFUnit).collref)
-        else
-        begin
+	  if lmi <> -1 then
+	  begin
+		if (GtaObject.Components[lmi] as TDFFUnit).collref <> nil then
+		  realptr := integer((GtaObject.Components[lmi] as TDFFUnit).collref)
+		else
+		begin
 
-          collindex := IsCollLoaded(obj.ModelName);
+		  collindex := IsCollLoaded(obj.ModelName);
 
 		  if collindex <> -1 then
-            (GtaObject.Components[lmi] as TDFFUnit).collref := TColObject(gtaobject.Components[collindex]);
+			(GtaObject.Components[lmi] as TDFFUnit).collref := TColObject(gtaobject.Components[collindex]);
 
-          realptr := 0;
-        end;
-      end;
+		  realptr := 0;
+		end;
+	  end;
 
-			extras.Lines.Add(format('COLL radius: %0.2f', [collbounds.radius]));
-			extras.Lines.Add(format('COLL file: %s', [collname]));
-			extras.Lines.Add(format('COLL collection: %s', [collectionname]));
+		extras.Lines.Add(format('COLL radius: %0.2f', [collbounds.radius]));
+		extras.Lines.Add(format('COLL file: %s', [collname]));
+		extras.Lines.Add(format('COLL collection: %s', [collectionname]));
 
-			for i := 0 to ideflags.Items.Count - 1 do
-      begin
-				ideflags.Checked[i]     := bitunit.IsBitSet(city.IDE[idefile].objects[ideitem].Flags, i);
-        ideflags.ItemEnabled[i] := False;
-      end;
+		for i := 0 to ideflags.Items.Count - 1 do
+		begin
+			ideflags.Checked[i]     := bitunit.IsBitSet(city.IDE[idefile].objects[ideitem].Flags, i);
+			ideflags.ItemEnabled[i] := False;
+		end;
 
-    end;
+	end;
 
-  end;
+	end;
 
-  if lmi <> -1 then
-    (GtaObject.Components[lmi] as TDFFUnit).model.glDraw(nil, nil, True, 0, nightmode, false);
+	if lmi <> -1 then
+	(GtaObject.Components[lmi] as TDFFUnit).model.glDraw(nil, nil, True, 0, nightmode, false);
 
-  inp_txdname.Text := obj.TextureName;
+	inp_txdname.Text := obj.TextureName;
 
-  lmi := city.IPL[selipl].InstObjects[selitem].LoadedModelIndex;
+	lmi := city.IPL[selipl].InstObjects[selitem].LoadedModelIndex;
 
-  if lmi <> -1 then
-  begin
+	if lmi <> -1 then
+	begin
 
-    if (GtaObject.Components[lmi] as TDFFUnit).txdref <> -1 then
-      if GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] <> nil then
-        for i := 0 to high((GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] as TtxdUnit).texture.textures) do
-          txdtextures.Lines.add((GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] as TtxdUnit).texture.textures[i].Name);
-  end;
+	if (GtaObject.Components[lmi] as TDFFUnit).txdref <> -1 then
+	  if GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] <> nil then
+		for i := 0 to high((GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] as TtxdUnit).texture.textures) do
+		  txdtextures.Lines.add((GtaObject.Components[(GtaObject.Components[lmi] as TDFFUnit).txdref] as TtxdUnit).texture.textures[i].Name);
+	end;
 
-  //if Button = mbLeft then wnd_advinfo.show;
+	//if Button = mbLeft then wnd_advinfo.show;
 
 end;
 
@@ -7125,36 +7442,6 @@ begin
 	 if Lo < iHi then QuickSort(Lo, iHi) ;
 end;
 
-function EnumScreensProc(hm: HScreen; dc: HDC; r: PRect; Data: Pointer): boolean; stdcall;
-var
-  moninfo: tagScreenINFOEXA;
-  display: TDisplayDeviceA;
-begin
-  // 1 new Screen!
-
-    setlength(Screens, length(Screens) + 1);
-
-    // get Screen resolution, flags, etc..
-    fillchar(moninfo, sizeof(moninfo), 0);
-    moninfo.cbSize := 72;
-		GetMonitorInfoA(hm, @moninfo);
-
-	//  move(moninfo.szDevice, Screens[length(Screens)-1].name, 32); // no longer used, see below
-		move(r^, Screens[length(Screens) - 1].Rect, sizeof(Trect));
-		Screens[length(Screens) - 1].def := moninfo.dwFlags and ScreenINFOF_PRIMARY = ScreenINFOF_PRIMARY;
-
-		Screens[length(Screens) - 1].depth := GetDeviceCaps(hm, BITSPIXEL);
-
-
-    // get proper device name
-    display.cb := sizeof(display);
-    EnumDisplayDevicesA(nil, length(Screens) - 1, display, 0);
-
-		move(display.DeviceString, Screens[length(Screens) - 1].Name, 128);
-
-  Result := True;
-end;
-
 procedure TGtaEditor.btn_reportClick(Sender: TObject);
 var
 	i: integer;
@@ -7240,8 +7527,8 @@ procedure TGtaEditor.Image15MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
 
-		ReleaseCapture();
-		SendMessage(wnd_advinfo.Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+	ReleaseCapture();
+	SendMessage(pnl_besen.Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
 
 end;
 
@@ -7573,6 +7860,347 @@ nudgerotmp:= nudgepowerrot.position * (0.5 / 1500);
 Label68.caption:= format('nudge power: %0.4f', [nudgemp]);
 end;
 
+procedure TGtaEditor.SpeedButton3Click(Sender: TObject);
+begin
+	pnl_besen.hide;
+end;
+
+procedure TGtaEditor.Image17MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+
+	ReleaseCapture();
+	SendMessage(wnd_advinfo.Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+
+end;
+
+procedure TGtaEditor.SpeedButton4Click(Sender: TObject);
+begin
+	pnl_besen.show();
+end;
+
+procedure TGtaEditor.jseditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+	if ((key = 13) and (shift = [ssCtrl])) then begin
+		runbuffer(jseditor.lines.gettext());
+	end;
+	
+end;
+
+procedure TGtaEditor.SpeedButton5Click(Sender: TObject);
+begin
+
+	runbuffer(jseditor.lines.gettext());
+	
+end;
+
+{ TEditorControl }
+
+procedure TEditorControl.ConstructObject(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer);
+begin
+  inherited;
+
+end;
+
+constructor TEditorControl.Create(AInstance: TObject;
+  APrototype: TBESENObject; AHasPrototypeProperty: longbool);
+begin
+  inherited;
+
+end;
+
+procedure TEditorControl.GetCameraViewport(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+var
+	Content:{$ifdef BESENSingleStringType}TBESENString{$else}ansistring{$endif};
+begin
+
+ ResultValue.ValueType:=bvtUNDEFINED;
+
+   Content:='{"Camera":';
+
+	 Content:=Content+'{';
+	 Content:=Content+'"position":[' + floattostr(Camera.Position[0]) + ','  + floattostr(Camera.Position[1]) + ','  + floattostr(Camera.Position[2]) + '],';
+	 Content:=Content+'"view":[' + floattostr(Camera.View[0]) + ','  + floattostr(Camera.View[1]) + ','  + floattostr(Camera.View[2]) + '],';
+	 Content:=Content+'"upvector":[' + floattostr(Camera.UpVector[0]) + ','  + floattostr(Camera.UpVector[1]) + ','  + floattostr(Camera.UpVector[2]) + '],';
+
+	 Content:=Content+'"fov":' + floattostr(camera.fovy) + ',';
+	 Content:=Content+'"znear":' + floattostr(camera.zNear) + ',';
+	 Content:=Content+'"zfar":' + floattostr(camera.zFar) + '';
+
+	 Content:=Content+'}';
+	 Content:=Content+'}';
+	 
+	 // lodaggresivity.position and max
+	 // drawdistance.position and max
+	 // streamlimit.position and max
+	 // cb_showcoll.position and colls loaded (?)
+	 
+	ResultValue:=TBESEN(Instance).JSONEval(Content);
+	
+end;
+
+procedure TEditorControl.ProduceSnapShot(const ThisArgument: TBESENValue; Arguments: PPBESENValues; CountArguments: integer);
+var
+  ps:   Tmemorystream;
+  renderw, renderh: integer;
+  bmp:  Tbitmap;
+  jpg:  TJPEGImage;
+  fobj: Pobjs;
+
+  // finding optimal distance..
+  obj, splits, vert, vart: integer;
+  d, cd:     single;
+  dffloader: TDffLoader;
+  avail2render: integer;
+begin
+
+	renderw := BESENFloatToInt(Arguments[0]^.Num);
+	renderh := BESENFloatToInt(Arguments[1]^.Num);
+	//renderh := strtoint(BESENFloatToStr(Arguments[2]^.Num));
+
+	{$I-}
+	try
+	mkdir(working_gta_dir + '\' + Arguments[2].Str + '\');
+	except
+	end;
+	{$I+}
+
+	gtaeditor.GlPanel.Align:= alNone;
+	
+	gtaeditor.GlPanel.width:= renderw; 
+	gtaeditor.GlPanel.height:= renderh; 
+	
+	gtaeditor.GlPanelResize(gtaeditor.GlPanel);
+	
+	try
+		EnterCriticalSection(StreamingLock);
+		gtaeditor.StreamView(); // force loading of the object id we need.
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+	
+	SwapBuffers(gtaeditor.DC);
+
+	gtaeditor.glDraw;
+	
+	SwapBuffers(gtaeditor.DC);
+
+	gtaeditor.glDraw;
+
+	ps      := Tmemorystream.Create;
+	ps.size := renderw * renderh * 4;
+	glReadPixels(0, 0, renderw, renderh, GL_BGRA_EXT, GL_UNSIGNED_BYTE, ps.Memory);
+
+	bmp := TBitmap.Create;
+	bmp.Width := renderw;
+	bmp.Height := renderh;
+	bmp.pixelformat := pf32bit;
+	ScanLinesFromRaw(ps, bmp, renderw * 4);
+	ps.Free;
+	bmp.Modified := True;
+
+	jpg := TJPEGImage.Create;
+	jpg.Assign(bmp);
+	jpg.SaveToFile(working_gta_dir + '\' + Arguments[2].Str + '\' + Arguments[3].Str + '.jpg');
+	jpg.Free;
+	bmp.Free;
+
+	gtaeditor.GlPanel.Align:= alClient;
+	
+	gtaeditor.GlPanel.Realign;
+	gtaeditor.GlPanelResize(gtaeditor.GlPanel); // restore viewport
+
+
+end;
+
+procedure TEditorControl.Raycast_Viewport(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var AResult: TBESENValue);
+begin
+
+// takes in 0..1 mapped floats of vertical and horizontal size
+// maps to pixel coords
+// returns json array of first target x,y,z hit and object id (todo: could be an array of all results)
+
+end;
+
+procedure TEditorControl.SetCameraViewport(const ThisArgument: TBESENValue; Arguments: PPBESENValues; CountArguments: integer);
+begin
+//	showmessage(Arguments[0].Str);
+
+	Camera.Position[0] := Arguments[0].Num;
+	Camera.Position[1] := Arguments[1].Num;
+	Camera.Position[2] := Arguments[2].Num;
+
+	Camera.View[0]     := Arguments[3].Num;
+	Camera.View[1]     := Arguments[4].Num;
+	Camera.View[2]     := Arguments[5].Num;
+
+	camera.fovy:=		Arguments[6].Num;
+	camera.zNear:=		Arguments[7].Num;
+	camera.zFar:=		Arguments[8].Num;
+	
+	camera.UpVector[0] := Arguments[9].Num;
+	camera.UpVector[2] := Arguments[10].Num;
+	camera.UpVector[1] := Arguments[11].Num;
+	
+	gtaeditor.GlPanelResize(gtaeditor.GlPanel);
+	
+	try
+		EnterCriticalSection(StreamingLock);
+		gtaeditor.StreamView(); // force loading of the object id we need.
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+	
+	gtaeditor.glDraw;
+	
+end;
+
+
+
+procedure TScriptSystem.alert(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var ResultValue:TBESENValue);
+begin
+
+	showmessage(TBESEN(BesenInst).ToStr(Arguments^[0]^));
+  
+end;
+
+procedure TEditorControl.StreamerProcess(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var AResult: TBESENValue);
+begin
+
+	aresult.Num:= -1;
+	aresult.ValueType:= bvtUNDEFINED;
+
+	try
+		EnterCriticalSection(StreamingLock);
+
+		gtaeditor.StreamView();
+
+		try
+			gtaeditor.glDraw;
+		except
+
+		end;
+		
+
+		aresult.ValueType:= bvtNUMBER;
+		aresult.Num:= loadnext.Count;
+	finally
+		LeaveCriticalSection(StreamingLock);
+	end;
+	
+end;
+
+procedure TEditorControl.StreamerRemaining(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var AResult: TBESENValue);
+begin
+
+	aresult.ValueType:= bvtNUMBER;
+	aresult.Num:= loadnext.Count;
+	
+end;
+
+procedure TScriptSystem.NativePrompt(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var ResultValue: TBESENValue);
+var ss:{$ifdef BESENSingleStringType}TBESENString{$else}ansistring{$endif};
+    s:string;
+begin
+ ss:='';
+ try
+  if CountArguments>0 then begin
+{$ifdef BESENSingleStringType}
+   ss:=TBESEN(Instance).ToStr(Arguments^[0]^);
+{$else}
+   ss:=BESENEncodeString(BESENUTF16ToUTF8(TBESEN(BesenInst).ToStr(Arguments^[0]^)),UTF_8,BESENLocaleCharset);
+{$endif}
+  end else begin
+   ss:='';
+  end;
+(* if CountArguments>1 then begin
+{$ifdef BESENSingleStringType}
+    s:=TBESEN(Instance).ToStr(Arguments^[1]^);
+{$else}
+    s:=BESENEncodeString(BESENUTF16ToUTF8(TBESEN(Instance).ToStr(Arguments^[1]^)),UTF_8,BESENLocaleCharset);
+{$endif}
+  end else begin
+   s:='';
+  end;*)
+  write(ss);
+  readln(s);
+{$ifdef Delphi2009AndUp}
+  ResultValue:=BESENStringValue(s);
+{$else}
+  ResultValue:=BESENStringLocaleCharsetValue(s);
+{$endif}
+ finally
+ end;
+end;
+
+var
+objeditorcontrol: TBESENObject;
+
+procedure TScriptSystem.NativeVersion(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var ResultValue: TBESENValue);
+begin
+
+	ResultValue.ValueType:= bvtSTRING;
+	ResultValue.Str:= 'BESEN javascript engine in sa-mp map editor ' + wnd_about.Label1.caption;
+	
+end;
+
+procedure TScriptSystem.NativeLog(const ThisArgument: TBESENValue;
+  Arguments: PPBESENValues; CountArguments: integer;
+  var ResultValue: TBESENValue);
+begin
+
+// procedure NativeLog(const ThisArgument:TBESENValue;Arguments:PPBESENValues;CountArguments:integer;var ResultValue:TBESENValue);
+
+end;
+
+initialization
+
+  BesenInst := TBesen.Create(COMPAT_JS); //< We want JavaScript compability at all costs
+  
+  BesenInst.RecursionLimit := 128;
+  
+  ScriptSystem := TScriptSystem.Create;
+  
+  // Register global functions
+  TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('importScript', ScriptSystem.ImportScript, 1, []);
+  TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('execute', ScriptSystem.Execute, 1, []);
+  TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('print', ScriptSystem.Print, 1, []);
+  TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('alert', ScriptSystem.alert, 1, []);
+  TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('prompt',ScriptSystem.NativePrompt,1,[]);
+	TBESEN(BesenInst).ObjectGlobal.RegisterNativeFunction('version',ScriptSystem.NativeVersion,0,[]);
+																				  
+  // Register our classes  
+  BesenInst.RegisterNativeObject('EditorControl', TEditorControl);
+
+  {
+ ObjDocument:=TBESENObject.Create(Instance,TBESEN(Instance).ObjectPrototype,false);
+ TBESEN(Instance).GarbageCollector.Add(ObjDocument);
+ TBESEN(Instance).ObjectGlobal.OverwriteData('document',BESENObjectValue(ObjDocument),[bopaWRITABLE,bopaCONFIGURABLE]);
+ }
+  
+  //BesenInst.RegisterNativeObject('Cake', TCake);
+  //BesenInst.RegisterNativeObject('Cookie', TCookie);
+  
+  // Embed Javascript file: Baking.js
+  // RunScript('Baking.js');
+  
+  // Free BESEN instance
+  //BesenInst.Free;
+
 end.
 
-

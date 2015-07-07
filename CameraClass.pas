@@ -7,7 +7,13 @@ interface
   type TCamera = Object
     Position : TVector3f;      // The camera's position
     View     : TVector3f;      // The camera's View
-    UpVector : TVector3f;      // The camera's UpVector
+	UpVector : TVector3f;      // The camera's UpVector
+
+	fovy, aspect, zNear, zFar: double;
+	
+	public
+	Constructor Create;
+	
     procedure PositionCamera(positionX, positionY, positionZ : glFloat;
 			     viewX, viewY, viewZ : glFloat;
 			     upVectorX, upVectorY, upVectorZ : glFloat);
@@ -251,6 +257,16 @@ if ((tmp.x < 0) And (tmp.y >  0)) then Result:= 180 - (ArcTan(tmp.y      / Abs(t
 if ((tmp.x < 0) And (tmp.y <= 0)) then Result:= 180 + (ArcTan(tmp.y      / tmp.x)      * fradtodeg) else
 if ((tmp.x > 0) and (tmp.y <  0)) then Result:= 360 - (ArcTan(Abs(tmp.y) / tmp.x)      * fradtodeg) else
 Result:=0; }
+end;
+					
+constructor TCamera.Create();
+begin
+
+fovy:= 45.0;
+//aspect:=
+zNear:= 0.2;
+zFar:= 10000.0;
+
 end;
 
 end.
