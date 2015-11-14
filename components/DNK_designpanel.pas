@@ -1,20 +1,3 @@
-// unit DNK_designpanel
-//
-// panel that you can move and resize like a window at runtime
-// also fires an event when that happens
-//
-// version 1.0 copyright 2002 Delfi delfi@volja.net http://users.volja.net/delfi
-//
-// this component is freeware for non-commercial applications
-// if you want to use it in comercial program just ask for permission ...
-// you use this code on your own responsibility !
-// you may modify this unit but you must send me modified copy !
-// you may not change the original AUTHOR and you must leave this comments here !
-// you may not sell this code !
-// you may not distribute this code on any comercial cd, dvd or any other removable media
-//
-// if you improved this component add your comment after this line and send me modified copy
-
 unit DNK_designpanel;
 
 interface
