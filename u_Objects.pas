@@ -643,6 +643,8 @@ begin
         // todo: should IMGExportBuffer() for speed..
         IMGExportFile(binipl, PChar(GetTempDir + '\' + streamname));
 
+		// failures here? maybe you are out of drive space in temp.
+		
         ipl[high(ipl)].loadfrombinfile(PChar(GetTempDir + '\' + streamname));
 
         deletefile(PChar(GetTempDir + '\' + streamname));

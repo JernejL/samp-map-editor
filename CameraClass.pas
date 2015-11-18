@@ -10,6 +10,7 @@ interface
 	UpVector : TVector3f;      // The camera's UpVector
 
 	fovy, aspect, zNear, zFar: double;
+	is_ortho: boolean;
 	
 	public
 	Constructor Create;
@@ -261,6 +262,8 @@ end;
 					
 constructor TCamera.Create();
 begin
+
+//is_ortho:= true; //todo: test
 
 fovy:= 45.0;
 //aspect:=

@@ -24,7 +24,9 @@ object wnd_about: Twnd_about
     Height = 13
     Align = alTop
     Alignment = taCenter
-    Caption = 'SA-MP Map Construction (Goulash sandwich edition build 23072014)'
+    Caption = 
+      'SA-MP Map Construction (Selfish Artichoke edition build 23072014' +
+      ')'
     Layout = tlCenter
   end
   object Label2: TLabel

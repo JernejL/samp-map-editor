@@ -58,7 +58,7 @@ uses
 	checkbox_32, DNK_RoundSlider, bitunit, Grids, registry, DNK_Panel,
 	SynMemo,
 	BESEN, BESENValue, BESENObject, BESENErrors, BESENNativeObject, BESENObjectJSON,
-	BESENConstants, BESENObjectGlobal, BESENNumberUtils,
+	BESENConstants, BESENObjectGlobal, BESENNumberUtils, BESENObjectMath, 
 
 	BESENStringUtils,
   BESENStringTree,
@@ -77,7 +77,7 @@ uses
   BESENObjectString, BESENCharset,
 
 	 SynEditHighlighter,
-  SynHighlighterJScript, DNK_designpanel;
+  SynHighlighterJScript, DNK_designpanel, madExceptVcl;
 
 {$L EliRT.obj}
 
@@ -444,6 +444,7 @@ type
     SynJScriptSyn1: TSynJScriptSyn;
     SpeedButton4: TSpeedButton;
     SpeedButton5: TSpeedButton;
+    MadExceptionHandler1: TMadExceptionHandler;
 
 	function calculatecenterofmapping: t3drect;
 
@@ -1520,6 +1521,8 @@ begin
 end;
 
 procedure startpicking;
+var
+orthopower: integer;
 begin
   fillchar(buffer, sizeof(buffer), #0);
 
@@ -1537,9 +1540,20 @@ begin
   glLoadIdentity;                 // Resets The Matrix
 
   gluPickMatrix(cx, (viewport[3] - cy), 1.0, 1.0, viewport);  // Zoom into a small area where the mouse is
-  gluPerspective(45.0, (viewport[2] - viewport[0]) / (viewport[3] - viewport[1]), 0.2, 10000.0);  // Do the perspective calculations. Last value = max clipping depth
-  //  gluPerspective(45.0, (viewport[2]-viewport[0])/(viewport[3]-viewport[1]), 0.1, 10000.0); // Apply The Perspective Matrix
+  //gluPerspective(45.0, (viewport[2] - viewport[0]) / (viewport[3] - viewport[1]), 0.2, 10000.0);  // Do the perspective calculations. Last value = max clipping depth
 
+  orthopower:= 10;
+  
+  if (Camera.is_ortho) then
+		glOrtho(- gtaeditor.GlPanel.Width / orthopower, gtaeditor.GlPanel.Width / orthopower, - gtaeditor.GlPanel.Height / orthopower, gtaeditor.GlPanel.Height / orthopower, Camera.zNear, Camera.zFar)
+  else  
+		gluPerspective(Camera.fovy, gtaeditor.GlPanel.Width / gtaeditor.GlPanel.Height, Camera.zNear, Camera.zFar);  // Do the perspective calculations. Last value = max clipping depth
+  
+//	  gluPerspective(Camera.fovy, (viewport[2] - viewport[0]) / (viewport[3] - viewport[1]), Camera.zNear, Camera.zFar);  // Do the perspective calculations. Last value = max clipping depth
+  
+  //glOrtho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far);
+  //left and right specify the x-coordinate clipping planes, bottom and top specify the y-coordinate clipping planes, and near and far specify the distance to the z-coordinate clipping planes. Together these coordinates provide a box shaped viewing volume.
+  
   //  glPushName(1337);               // Push At Least One Entry Onto The Stack
 
   glMatrixMode(GL_MODELVIEW);      // Select The Modelview Matrix
@@ -2667,8 +2681,6 @@ begin
     startpicking;
 
 
-
-
 if is_picking = false then begin
   // draw water
 
@@ -3394,8 +3406,6 @@ begin
 	rc := wglCreateContext(dc);    // Rendering Context = window-glCreateContext
 	wglMakeCurrent(dc, rc);        // Make the DC (Form1) the rendering Context
 
-	Buffer:= glGetString(GL_RENDERER);
-
 	TempDC:= GetDC(GetDesktopWindow());
 	i:= GetDeviceCaps(TempDC, BITSPIXEL);
 
@@ -3415,20 +3425,27 @@ begin
 
 	end;
 
-	setlength(Screens, 0);
-
-	if (Buffer = 'GDI Generic') then begin
-		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + buffer);
-		halt;
-	end;
-
 	Buffer:= glGetString(GL_Vendor);
 
 	if (Buffer = 'Microsoft Corporation') then begin
-		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + buffer);
+		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + #13 + 
+
+			'First video device: ' + Screens[0].Name + ' - OpenGL Vendor: ' + buffer);
+			
 		halt;
 	end;
 
+	Buffer:= glGetString(GL_RENDERER);
+	
+	if (Buffer = 'GDI Generic') then begin
+		showmessage('Please install proper drivers for your graphics card from your card''s manufacturer (and not microsoft driver). Google will help you in achieving this task.' + #13 + 
+
+			'First video device: ' + Screens[0].Name + ' - OpenGL driver: ' + buffer);
+			
+		halt;
+	end;
+
+	setlength(Screens, 0);
 
 	// Initialist GL environment variables
 	glInit;
@@ -3456,6 +3473,8 @@ begin
 end;
 
 procedure TGtaEditor.GlPanelResize(Sender: TObject);
+var
+	orthopower: integer;
 begin
 
   glViewport(0, 0, GlPanel.Width, GlPanel.Height);    // Set the viewport for the OpenGL window
@@ -3463,7 +3482,25 @@ begin
   glLoadIdentity();                   // Reset View
 
   // todo: this is needed for javascript scripting
-  gluPerspective(Camera.fovy, GlPanel.Width / GlPanel.Height, Camera.zNear, Camera.zFar);  // Do the perspective calculations. Last value = max clipping depth
+
+  orthopower:= 10;
+  
+  if (Camera.is_ortho) then
+		glOrtho(- GlPanel.Width / orthopower, GlPanel.Width / orthopower, - GlPanel.Height / orthopower, GlPanel.Height / orthopower, Camera.zNear, Camera.zFar)
+  else  
+		gluPerspective(Camera.fovy, GlPanel.Width / GlPanel.Height, Camera.zNear, Camera.zFar);  // Do the perspective calculations. Last value = max clipping depth
+  
+
+  {
+  left, right
+Specify the coordinates for the left and right vertical clipping planes.
+
+bottom, top
+Specify the coordinates for the bottom and top horizontal clipping planes.
+
+nearVal, farVal
+Specify the distances to the nearer and farther depth clipping planes. These values are negative if the plane is to be behind the viewer.
+  }
   
   //  gluPerspective( 10.0, GlPanel.Width / GlPanel.Height, 0.2, 10000.0);  // Do the perspective calculations. Last value = max clipping depth
 
@@ -3774,7 +3811,7 @@ begin
     MouseXVal   := X;
     MouseYVal   := Y;
 
-		ObjV[0] := city.IPL[selipl].InstObjects[selitem].Location[0];
+	ObjV[0] := city.IPL[selipl].InstObjects[selitem].Location[0];
     ObjV[1] := city.IPL[selipl].InstObjects[selitem].Location[1];
     ObjV[2] := city.IPL[selipl].InstObjects[selitem].Location[2];
 
@@ -3805,6 +3842,8 @@ StartV[2]
   end;
 
   label_exstatus.Caption := format('(%0.4f %0.4f %0.4f)', [mouse3d[0], mouse3d[1], mouse3d[2]]);
+
+  logger.Lines.Add(format('Window clicked at: (%0.4f %0.4f %0.4f).', [mouse3d[0], mouse3d[1], mouse3d[2]]));
 
   cx := x;
   cy := y;
@@ -3909,6 +3948,8 @@ var
 	boxmin, boxmax: Tvector;
 	reg: Tregistry;
 begin
+
+	btn_loadwithcols.click();
 
 	Reg := TRegistry.Create;
 	Reg.RootKey := HKEY_CURRENT_USER;
@@ -6222,7 +6263,7 @@ begin
 
     if distance < gtaeditor.drawdistance.Position then
     begin
-      if (Frustum.IsPointWithin(Location)) = True then
+	  if (Frustum.IsPointWithin(Location)) = True then
         callback(thebody, newtonbodygetuserdata(thebody));
 	end;
 
@@ -6813,7 +6854,7 @@ begin
               with city.IPL[L].InstObjects[j] do
               begin
 
-                if id <> idei then
+                if ((id <> idei) and (idei <> -1)) then
                   continue;
 
                 if (vectorgeometry.VectorDistance(Location, tempoint) < radius) then
@@ -7266,7 +7307,7 @@ end;
 
 procedure TGtaEditor.updatenudgeedtors;
 begin
-if (selipl < 1) or (selitem < 0) then exit;
+if ((selipl < 1) or (selitem < 0)) then exit;
 
 	with city.IPL[selipl].InstObjects[selitem] do
 	begin
@@ -7963,7 +8004,10 @@ begin
 
 	{$I-}
 	try
-	mkdir(working_gta_dir + '\' + Arguments[2].Str + '\');
+
+	if (not DirectoryExists(Arguments[2].Str)) then
+		mkdir(working_gta_dir + '\' + Arguments[2].Str + '\');	
+	
 	except
 	end;
 	{$I+}
@@ -8004,7 +8048,12 @@ begin
 
 	jpg := TJPEGImage.Create;
 	jpg.Assign(bmp);
-	jpg.SaveToFile(working_gta_dir + '\' + Arguments[2].Str + '\' + Arguments[3].Str + '.jpg');
+
+	if (DirectoryExists(Arguments[2].Str)) then
+		jpg.SaveToFile(Arguments[2].Str + '\' + Arguments[3].Str + '.jpg')
+	else
+		jpg.SaveToFile(working_gta_dir + '\' + Arguments[2].Str + '\' + Arguments[3].Str + '.jpg');
+	
 	jpg.Free;
 	bmp.Free;
 

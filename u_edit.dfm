@@ -1,9 +1,9 @@
 object GtaEditor: TGtaEditor
-  Left = 268
-  Top = 161
+  Left = 222
+  Top = 101
   AutoScroll = False
   Caption = 'SA-MP: Map Construction'
-  ClientHeight = 960
+  ClientHeight = 869
   ClientWidth = 1571
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -28,7 +28,7 @@ object GtaEditor: TGtaEditor
   object Splitter2: TSplitter
     Left = 1213
     Top = 27
-    Height = 857
+    Height = 766
     Align = alRight
     ResizeStyle = rsUpdate
   end
@@ -757,7 +757,7 @@ object GtaEditor: TGtaEditor
   end
   object Panel_imageoptionpanel: TPanel
     Left = 0
-    Top = 941
+    Top = 850
     Width = 1571
     Height = 19
     Align = alBottom
@@ -865,7 +865,7 @@ object GtaEditor: TGtaEditor
     Left = 0
     Top = 27
     Width = 1213
-    Height = 857
+    Height = 766
     Align = alClient
     BevelOuter = bvNone
     Caption = '[ThreeDee OpenGL Reindeer, WORKING...]'
@@ -914,7 +914,7 @@ object GtaEditor: TGtaEditor
     Left = 1361
     Top = 27
     Width = 210
-    Height = 857
+    Height = 766
     ActivePage = TabSheet3
     Align = alRight
     Style = tsFlatButtons
@@ -933,7 +933,7 @@ object GtaEditor: TGtaEditor
       end
       object Bevel4: TBevel
         Left = 0
-        Top = 505
+        Top = 414
         Width = 202
         Height = 3
         Align = alBottom
@@ -1140,7 +1140,7 @@ object GtaEditor: TGtaEditor
       end
       object pnl_cam: TPanel
         Left = 0
-        Top = 508
+        Top = 417
         Width = 202
         Height = 318
         Align = alBottom
@@ -1736,7 +1736,7 @@ object GtaEditor: TGtaEditor
       end
       object Panel6: TPanel
         Left = 0
-        Top = 487
+        Top = 396
         Width = 202
         Height = 18
         Align = alBottom
@@ -1904,7 +1904,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 133
         Width = 202
-        Height = 354
+        Height = 263
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 32
@@ -1930,7 +1930,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 48
         Width = 202
-        Height = 754
+        Height = 663
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 180
@@ -2246,7 +2246,7 @@ object GtaEditor: TGtaEditor
       end
       object Panel11: TPanel
         Left = 0
-        Top = 802
+        Top = 711
         Width = 202
         Height = 24
         Align = alBottom
@@ -2338,7 +2338,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 48
         Width = 202
-        Height = 754
+        Height = 663
         Style = lbOwnerDrawFixed
         Align = alClient
         ItemHeight = 180
@@ -2352,7 +2352,7 @@ object GtaEditor: TGtaEditor
       TabVisible = False
       DesignSize = (
         202
-        826)
+        735)
       object btn_newton_a: TBitBtn
         Left = 0
         Top = 7
@@ -2531,7 +2531,7 @@ object GtaEditor: TGtaEditor
         Left = 0
         Top = 21
         Width = 202
-        Height = 805
+        Height = 714
         HorzScrollBar.Visible = False
         VertScrollBar.Smooth = True
         VertScrollBar.Tracking = True
@@ -4241,7 +4241,7 @@ object GtaEditor: TGtaEditor
     Left = 0
     Top = 27
     Width = 1213
-    Height = 857
+    Height = 766
     Align = alClient
     TabOrder = 7
     object Label23: TLabel
@@ -4505,6 +4505,7 @@ object GtaEditor: TGtaEditor
         FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
         00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       ParentFont = False
+      Visible = False
       OnClick = btn_loadClick
     end
     object labelinstructions2: TLabel
@@ -5005,7 +5006,7 @@ object GtaEditor: TGtaEditor
     Left = 1216
     Top = 27
     Width = 145
-    Height = 857
+    Height = 766
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 3
@@ -5013,10 +5014,10 @@ object GtaEditor: TGtaEditor
     Visible = False
     DesignSize = (
       145
-      857)
+      766)
     object Label9: TLabel
       Left = 3
-      Top = 561
+      Top = 470
       Width = 139
       Height = 16
       Anchors = [akLeft, akBottom]
@@ -5034,7 +5035,7 @@ object GtaEditor: TGtaEditor
     end
     object Label18: TLabel
       Left = 3
-      Top = 607
+      Top = 516
       Width = 139
       Height = 15
       Anchors = [akLeft, akBottom]
@@ -5052,7 +5053,7 @@ object GtaEditor: TGtaEditor
     end
     object Label19: TLabel
       Left = 3
-      Top = 735
+      Top = 644
       Width = 134
       Height = 29
       Anchors = [akLeft, akBottom]
@@ -5070,7 +5071,7 @@ object GtaEditor: TGtaEditor
     end
     object Label48: TLabel
       Left = 3
-      Top = 451
+      Top = 360
       Width = 139
       Height = 16
       Anchors = [akLeft, akBottom]
@@ -5105,7 +5106,7 @@ object GtaEditor: TGtaEditor
     end
     object addidetext: TDNK_edit
       Left = 5
-      Top = 629
+      Top = 538
       Width = 68
       Height = 19
       Anchors = [akLeft, akBottom]
@@ -5119,7 +5120,7 @@ object GtaEditor: TGtaEditor
     end
     object addidedesc: TDNK_edit
       Left = 3
-      Top = 580
+      Top = 489
       Width = 139
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5130,7 +5131,7 @@ object GtaEditor: TGtaEditor
     end
     object btndec: TBitBtn
       Left = 76
-      Top = 628
+      Top = 537
       Width = 33
       Height = 22
       Anchors = [akLeft, akBottom]
@@ -5182,7 +5183,7 @@ object GtaEditor: TGtaEditor
     end
     object btninc: TBitBtn
       Left = 109
-      Top = 628
+      Top = 537
       Width = 33
       Height = 22
       Anchors = [akLeft, akBottom]
@@ -5234,7 +5235,7 @@ object GtaEditor: TGtaEditor
     end
     object renderone: TBitBtn
       Left = 3
-      Top = 846
+      Top = 755
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5245,7 +5246,7 @@ object GtaEditor: TGtaEditor
     end
     object btn_renderranges: TBitBtn
       Left = 3
-      Top = 821
+      Top = 730
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5255,7 +5256,7 @@ object GtaEditor: TGtaEditor
     end
     object Edit5: TDNK_edit
       Left = 3
-      Top = 769
+      Top = 678
       Width = 134
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5266,7 +5267,7 @@ object GtaEditor: TGtaEditor
     end
     object Edit6: TDNK_edit
       Left = 3
-      Top = 792
+      Top = 701
       Width = 134
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5277,7 +5278,7 @@ object GtaEditor: TGtaEditor
     end
     object Panel15: TPanel
       Left = 3
-      Top = 656
+      Top = 565
       Width = 137
       Height = 27
       Anchors = [akLeft, akBottom]
@@ -5386,7 +5387,7 @@ object GtaEditor: TGtaEditor
     end
     object cb_fixup_addprefab: TCheckBox
       Left = 3
-      Top = 684
+      Top = 593
       Width = 137
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5395,7 +5396,7 @@ object GtaEditor: TGtaEditor
     end
     object btn_prefabresetzoom: TBitBtn
       Left = 4
-      Top = 704
+      Top = 613
       Width = 134
       Height = 25
       Anchors = [akLeft, akBottom]
@@ -5450,7 +5451,7 @@ object GtaEditor: TGtaEditor
       Left = 2
       Top = 52
       Width = 139
-      Height = 395
+      Height = 304
       Anchors = [akLeft, akTop, akBottom]
       ItemHeight = 13
       TabOrder = 11
@@ -5458,7 +5459,7 @@ object GtaEditor: TGtaEditor
     end
     object inp_searchide: TDNK_edit
       Left = 3
-      Top = 469
+      Top = 378
       Width = 139
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5470,7 +5471,7 @@ object GtaEditor: TGtaEditor
     end
     object inp_bysizer: TDNK_edit
       Left = 73
-      Top = 520
+      Top = 429
       Width = 41
       Height = 21
       Anchors = [akLeft, akBottom]
@@ -5483,7 +5484,7 @@ object GtaEditor: TGtaEditor
     end
     object rb_bigger: TRadioButton
       Left = 17
-      Top = 514
+      Top = 423
       Width = 56
       Height = 12
       Anchors = [akLeft, akBottom]
@@ -5493,7 +5494,7 @@ object GtaEditor: TGtaEditor
     end
     object RadioButton2: TRadioButton
       Left = 17
-      Top = 530
+      Top = 439
       Width = 56
       Height = 12
       Anchors = [akLeft, akBottom]
@@ -5503,7 +5504,7 @@ object GtaEditor: TGtaEditor
     end
     object cb_bysize: TCheckBox
       Left = 3
-      Top = 495
+      Top = 404
       Width = 97
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -5621,7 +5622,7 @@ object GtaEditor: TGtaEditor
   end
   object Panel37: TPanel
     Left = 0
-    Top = 884
+    Top = 793
     Width = 1571
     Height = 57
     Align = alBottom
@@ -6178,7 +6179,7 @@ object GtaEditor: TGtaEditor
     end
   end
   object pnl_besen: TDNK_designpanel
-    Left = 290
+    Left = 333
     Top = 140
     Width = 824
     Height = 608
@@ -6542,5 +6543,9 @@ object GtaEditor: TGtaEditor
     StringAttri.Style = [fsBold]
     Left = 817
     Top = 96
+  end
+  object MadExceptionHandler1: TMadExceptionHandler
+    Left = 606
+    Top = 71
   end
 end

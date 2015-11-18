@@ -1,6 +1,11 @@
 program editor;
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   Forms,
   u_edit in 'u_edit.pas' {GtaEditor},
   gtadll in 'Struct\GTADLL.PAS',
