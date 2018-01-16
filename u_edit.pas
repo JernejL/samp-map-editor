@@ -3155,6 +3155,9 @@ begin
 
   if fileexists(working_gta_dir + '\samp\custom.ide') = True then
     city.loadfile('IDE', working_gta_dir + '\samp\custom.ide', False);
+    
+  if fileexists(working_gta_dir + '\samp\samp.ipl') = True then
+    city.loadfile('IPL', working_gta_dir + '\samp\samp.ipl', False);
 
   city.loadfile('IDE', working_gta_dir + '\data\maps\veh_mods\veh_mods.ide', False);
 
